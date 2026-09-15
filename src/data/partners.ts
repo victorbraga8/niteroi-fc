@@ -6,7 +6,7 @@ import loterj from "../assets/partners/loterj.png";
 import hal from "../assets/partners/hal-alternativa.png";
 import conteComRj from "../assets/partners/conte-com-rj.png";
 import redeOsorios from "../assets/partners/rede-osorios.png";
-import mx from "../assets/partners/mx-publicidade.png";
+import mx from "../assets/partners/mx-logo.png";
 import mbw from "../assets/partners/mbw-sports.png";
 
 /** Parceiros as listed on niteroiensefc.com.br/negocios.php */
