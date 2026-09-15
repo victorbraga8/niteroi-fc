@@ -1,8 +1,10 @@
 ---
 import { Image } from 'astro:assets'
+import MaybeLink from '../ui/MaybeLink.astro'
 import campoParaty from '../../assets/media/campo-paraty-2024.jpg'
 import { club, history } from '../../data/club'
 import { institutionalStories } from '../../data/stories'
+import { linkOutToOfficialSite } from '../../config/experience'
 
 /**
  * DENTRO DO CLUBE
@@ -96,9 +98,10 @@ import { institutionalStories } from '../../data/stories'
             {
               institutionalStories.map((story) => (
                 <li class="border-b border-[var(--surface-line)] last:border-b-0">
-                  <a
-                    href={story.href}
+                  <MaybeLink
+                    href={linkOutToOfficialSite ? story.href : undefined}
                     class="group flex min-h-[56px] items-center justify-between gap-6 py-4"
+                    external
                   >
                     <span class="text-[0.9375rem] leading-snug font-semibold text-white transition-colors group-hover:text-[var(--accent-bright)]">
                       {story.title}
@@ -109,7 +112,7 @@ import { institutionalStories } from '../../data/stories'
                     >
                       {story.dateLabel.replace(' de 2026', '')}
                     </time>
-                  </a>
+                  </MaybeLink>
                 </li>
               ))
             }
@@ -118,13 +121,19 @@ import { institutionalStories } from '../../data/stories'
 
         <div data-reveal>
           <h3 class="t-label mb-5">Transparência</h3>
-          <a
-            href="https://niteroiensefc.com.br/transparencia.php"
-            class="inline-flex min-h-[48px] items-center gap-3 border px-5 text-[0.8125rem] font-bold tracking-[0.1em] text-white uppercase transition-colors hover:border-[var(--accent-bright)]"
-            style="border-color: var(--surface-line); border-radius: 999px;"
-          >
-            Manual de marca e documentos
-          </a>
+          {
+            linkOutToOfficialSite && (
+              <a
+                href="https://niteroiensefc.com.br/transparencia.php"
+                class="inline-flex min-h-[48px] items-center gap-3 border px-5 text-[0.8125rem] font-bold tracking-[0.1em] text-white uppercase transition-colors hover:border-[var(--accent-bright)]"
+                style="border-color: var(--surface-line); border-radius: 999px;"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Manual de marca e documentos
+              </a>
+            )
+          }
           <p class="mt-4 max-w-[42ch] text-[0.875rem] leading-relaxed text-[var(--ink-faint)]">
             As três cores desta página vêm do manual oficial: Azul Itaipu {club.colors.itaipu}, Azul
             Niteroiense {club.colors.niteroiense} e branco.

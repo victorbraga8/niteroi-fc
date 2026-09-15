@@ -98,6 +98,14 @@ export const breakpoints = {
   reduceMotion: '(prefers-reduced-motion: reduce)',
 } as const
 
+/**
+ * While the experience is served from its own deployment, nothing leaves it
+ * for the institutional site at niteroiensefc.com.br: headlines, documents and
+ * fixtures are shown here without an outbound link. The source URLs stay in
+ * the data as provenance. Set this to true to hand the links back.
+ */
+export const linkOutToOfficialSite = false
+
 /** WebGL budget. The arena is one scene; it gets cheaper, never duplicated. */
 export const arena = {
   maxPixelRatio: { desktop: 1.75, mobile: 1.35 },

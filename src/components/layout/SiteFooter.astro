@@ -2,9 +2,11 @@
 import { Image } from 'astro:assets'
 import Crest from '../ui/Crest.astro'
 import Wordmark from '../ui/Wordmark.astro'
+import MaybeLink from '../ui/MaybeLink.astro'
 import golResende from '../../assets/media/gol-resende-2024.jpg'
 import { club, social } from '../../data/club'
 import { officialLinks, primaryNav } from '../../config/navigation'
+import { linkOutToOfficialSite } from '../../config/experience'
 ---
 
 <!--
@@ -57,25 +59,27 @@ import { officialLinks, primaryNav } from '../../config/navigation'
         </ul>
       </nav>
 
-      <nav aria-label="Site oficial do clube">
-        <h2 class="t-label mb-4 text-[0.8125rem]">Site oficial</h2>
-        <ul class="space-y-0.5">
-          {
-            officialLinks.map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-flex min-h-[40px] items-center text-[0.9375rem] text-[var(--ink-muted)] transition-colors hover:text-white"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
+      {
+        linkOutToOfficialSite && (
+          <nav aria-label="Site oficial do clube">
+            <h2 class="t-label mb-4 text-[0.8125rem]">Site oficial</h2>
+            <ul class="space-y-0.5">
+              {officialLinks.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex min-h-[40px] items-center text-[0.9375rem] text-[var(--ink-muted)] transition-colors hover:text-white"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
 
       <nav aria-label="Redes sociais">
         <h2 class="t-label mb-4 text-[0.8125rem]">Redes</h2>
@@ -109,12 +113,15 @@ import { officialLinks, primaryNav } from '../../config/navigation'
       <p>© {new Date().getFullYear()} {club.name}</p>
       <p>
         Conteúdo e imagens do{' '}
-        <a
-          href={club.site}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="underline underline-offset-2 transition-colors hover:text-white">site oficial</a
+        <MaybeLink
+          href={linkOutToOfficialSite ? club.site : undefined}
+          class={linkOutToOfficialSite
+            ? 'underline underline-offset-2 transition-colors hover:text-white'
+            : undefined}
+          external
         >
+          site oficial
+        </MaybeLink>
       </p>
     </div>
   </div>
