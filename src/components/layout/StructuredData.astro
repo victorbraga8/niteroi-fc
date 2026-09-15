@@ -1,0 +1,113 @@
+---
+import { club, social } from '../../data/club'
+import { matchday, nextMatch } from '../../data/season'
+import { currentMode } from '../../config/experience'
+
+/**
+ * Machine-readable version of what the page already says out loud.
+ *
+ * Nothing here is invented: the club data, the fixture and the matchday
+ * operation all come from the same typed sources the interface renders from,
+ * so the structured data cannot drift away from the page.
+ */
+
+const site = Astro.site ?? new URL(Astro.url.origin)
+const abs = (path: string) => new URL(path, site).href
+
+/** "R$ 10,00" -> "10.00", so the price is a number search engines can read. */
+const price = (label: string) => label.replace(/[^\d,]/g, '').replace(',', '.')
+
+const isHome = nextMatch.side === 'casa'
+const sellsTickets = isHome && currentMode.showMatchdayOperations
+
+const venue = {
+  '@type': 'Place',
+  name: isHome ? club.homeVenue : nextMatch.venue,
+  ...(isHome
+    ? {
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: club.city,
+          addressRegion: club.state,
+          addressCountry: 'BR',
+        },
+      }
+    : {}),
+}
+
+const team = {
+  '@type': 'SportsTeam',
+  '@id': abs('/#organizacao'),
+  name: club.name,
+  alternateName: [club.shortName, club.initials],
+  sport: 'Soccer',
+  url: site.href,
+  logo: abs('/brand/nfc-crest.png'),
+  image: abs('/og/niteroiense-og.jpg'),
+  foundingDate: '1913-05-11',
+  foundingLocation: { '@type': 'Place', name: `${club.city}, ${club.state}` },
+  location: venue,
+  areaServed: { '@type': 'City', name: club.city },
+  memberOf: { '@type': 'SportsOrganization', name: club.competition },
+  sameAs: social.map((item) => item.href),
+}
+
+const website = {
+  '@type': 'WebSite',
+  '@id': abs('/#site'),
+  url: site.href,
+  name: club.name,
+  inLanguage: 'pt-BR',
+  publisher: { '@id': abs('/#organizacao') },
+}
+
+const fixture = {
+  '@type': 'SportsEvent',
+  '@id': abs('/#proximo-desafio'),
+  name: `${nextMatch.home.name} x ${nextMatch.away.name}`,
+  description: `${nextMatch.competition}, ${nextMatch.round}ª rodada.`,
+  startDate: nextMatch.kickoff,
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  sport: 'Soccer',
+  url: abs('/#proximo-desafio'),
+  location: venue,
+  homeTeam: { '@type': 'SportsTeam', name: nextMatch.home.name },
+  awayTeam: { '@type': 'SportsTeam', name: nextMatch.away.name },
+  organizer: { '@id': abs('/#organizacao') },
+  image: abs('/og/niteroiense-og.jpg'),
+  // Tickets are only described where the club actually sells them: at home,
+  // on the day, on site. No online sales are implied.
+  ...(sellsTickets
+    ? {
+        offers: [
+          {
+            '@type': 'Offer',
+            name: 'Inteira',
+            price: price(matchday.tickets.full),
+            priceCurrency: 'BRL',
+            availability: 'https://schema.org/InStock',
+            url: abs('/#proximo-desafio'),
+            validFrom: nextMatch.kickoff.replace(/T.*$/, 'T12:00:00-03:00'),
+          },
+          {
+            '@type': 'Offer',
+            name: 'Meia-entrada',
+            price: price(matchday.tickets.half),
+            priceCurrency: 'BRL',
+            availability: 'https://schema.org/InStock',
+            url: abs('/#proximo-desafio'),
+            validFrom: nextMatch.kickoff.replace(/T.*$/, 'T12:00:00-03:00'),
+          },
+        ],
+      }
+    : {}),
+}
+
+const graph = {
+  '@context': 'https://schema.org',
+  '@graph': [team, website, fixture],
+}
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(graph)} is:inline />

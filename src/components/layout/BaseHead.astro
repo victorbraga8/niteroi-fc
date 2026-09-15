@@ -1,15 +1,27 @@
 ---
 import { Font } from 'astro:assets'
 import { club } from '../../data/club'
+import StructuredData from './StructuredData.astro'
 
 interface Props {
   title: string
   description: string
+  /** Absolute path, from the site root. Must be JPEG or PNG: WhatsApp does not
+   *  render WebP link previews. */
   ogImage?: string
+  ogImageAlt?: string
 }
 
-const { title, description, ogImage = '/brand/nfc-crest.png' } = Astro.props
-const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url)
+const {
+  title,
+  description,
+  ogImage = '/og/niteroiense-og.jpg',
+  ogImageAlt = `${club.name}, ${club.competition}`,
+} = Astro.props
+
+const site = Astro.site ?? new URL(Astro.url.origin)
+const canonical = new URL(Astro.url.pathname, site)
+const ogImageUrl = new URL(ogImage, site).href
 ---
 
 <meta charset="utf-8" />
@@ -18,18 +30,46 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url)
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical.href} />
 
-<link rel="icon" href="/brand/favicon-32.png" sizes="32x32" type="image/png" />
-<link rel="apple-touch-icon" href="/brand/nfc-crest.png" />
-<meta name="theme-color" content={club.colors.itaipu} />
-
+<!--
+  Sharing metadata sits directly under the title because the WhatsApp crawler
+  reads only the first part of the head. The image is a 1200x630 JPEG under
+  100kB: the ratio WhatsApp renders as a large preview, in the format and
+  weight it accepts. Its dimensions are declared so the preview can be laid
+  out before the file itself is fetched.
+-->
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content={club.name} />
 <meta property="og:locale" content="pt_BR" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical.href} />
-<meta property="og:image" content={new URL(ogImage, Astro.site ?? Astro.url).href} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:secure_url" content={ogImageUrl} />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={ogImageAlt} />
+
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@niteroiensefc" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageUrl} />
+<meta name="twitter:image:alt" content={ogImageAlt} />
+
+<meta
+  name="robots"
+  content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+/>
+<meta name="author" content={club.name} />
+
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="icon" href="/brand/favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="/brand/nfc-crest.png" />
+<link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+<meta name="theme-color" content={club.colors.itaipu} />
+
+<StructuredData />
 
 <Font cssVariable="--font-display" preload />
 <Font cssVariable="--font-text" preload />
