@@ -3,9 +3,10 @@ import { gsap, ScrollTrigger } from './context'
 /**
  * The entrance, and the handover into the opening scene.
  *
- * Progress is read from real work: fonts resolving and the images the opening
- * scene actually needs. A slow tail keeps the counter moving while the network
- * is quiet, so the number never freezes and never lies about being finished.
+ * Progress is read from real work: fonts resolving, the images the opening
+ * scene actually needs, and the hero film reaching playback. A slow tail keeps
+ * the counter moving while the network is quiet, so the number never freezes
+ * and never lies about being finished.
  *
  * At 100% the loader crest is matched onto the crest that lives behind the
  * hero, using the measured difference between the two, and the curtain opens
@@ -30,7 +31,12 @@ const CURTAIN_DONE = 'preloader:done'
  */
 const MIN_ENTRANCE = 2100
 
-export function initPreloader(): PreloaderResult {
+/**
+ * @param gates Work that must land before the curtain opens, beyond the page
+ *   load itself. Each one also counts toward the visible progress. They are
+ *   expected to settle on their own; the hard stop below is the last resort.
+ */
+export function initPreloader(gates: Promise<unknown>[] = []): PreloaderResult {
   const root = document.querySelector<HTMLElement>('[data-preloader]')
   const heroCrest = document.querySelector<HTMLElement>('[data-arena-crest]')
 
@@ -66,6 +72,7 @@ export function initPreloader(): PreloaderResult {
                 img.addEventListener('error', done, { once: true })
               }),
       ),
+      ...gates,
     ]
 
     let settled = 0
@@ -91,7 +98,10 @@ export function initPreloader(): PreloaderResult {
       onUpdate: render,
     })
 
+    let closed = false
     const finish = () => {
+      if (closed) return
+      closed = true
       drift.kill()
       gsap.killTweensOf(state)
       gsap
@@ -106,8 +116,14 @@ export function initPreloader(): PreloaderResult {
       window.setTimeout(finish, Math.max(0, MIN_ENTRANCE - elapsed))
     }
 
-    if (document.readyState === 'complete') whenLoaded()
-    else window.addEventListener('load', whenLoaded, { once: true })
+    const pageLoaded =
+      document.readyState === 'complete'
+        ? Promise.resolve()
+        : new Promise((done) => window.addEventListener('load', done, { once: true }))
+
+    // The curtain waits for the page and for every gate, so 100% means the
+    // opening is genuinely ready to be watched.
+    Promise.all([pageLoaded, ...gates]).then(whenLoaded, whenLoaded)
 
     // Nothing may hold the page hostage if a request hangs.
     window.setTimeout(finish, 7000)

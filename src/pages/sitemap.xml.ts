@@ -8,7 +8,7 @@ import type { APIRoute } from 'astro'
  * @astrojs/sitemap.
  */
 export const GET: APIRoute = ({ site }) => {
-  const origin = site ?? new URL('https://niteroiensefc.com.br')
+  const origin = site ?? new URL('https://niteroiensefc.vercel.app')
   const lastmod = new Date().toISOString().slice(0, 10)
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>

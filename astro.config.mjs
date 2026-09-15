@@ -3,7 +3,7 @@ import { defineConfig, fontProviders } from 'astro/config'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  site: 'https://niteroiensefc.com.br',
+  site: 'https://niteroiensefc.vercel.app',
   vite: {
     plugins: [tailwindcss()],
   },

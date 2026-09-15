@@ -2,16 +2,28 @@ import { gsap } from './context'
 import { heroFilm } from '../../data/videos'
 
 /**
- * Brings the opening background to life the moment the loader hands over.
+ * The opening background, running before the page is ever seen.
  *
- * The still and the real footage arrive together at 100%, so the film is
- * already playing by the time the visitor sees the page.
+ * The player is mounted at once, behind the curtain, and reports back when it
+ * is actually playing. The entrance waits on that report, so the moment the
+ * counter reaches 100% and the curtain opens, the film is already moving: the
+ * visitor never watches a still photograph turn into a video.
  *
  * The player is paused whenever the opening leaves the viewport or the tab is
  * hidden, so nothing plays where nobody is looking.
  */
 
-const START_DELAY = 0
+/** Once the embed has loaded, assume playback rather than wait forever. */
+const LOAD_GRACE = 2200
+/** Nothing about the film may hold the entrance longer than this. */
+const HARD_CAP = 5000
+
+export interface HeroFilmHandle {
+  /** Resolves when the film is running, or when it is settled that it will not run. */
+  playing: Promise<void>
+  /** Fade the opening background up. Called as the curtain opens. */
+  reveal(): void
+}
 
 interface Connection {
   saveData?: boolean
@@ -25,32 +37,67 @@ function connectionIsFrugal() {
   return connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g'
 }
 
-export function initHeroFilm(ready: Promise<void>) {
+const settled: HeroFilmHandle = { playing: Promise.resolve(), reveal: () => {} }
+
+export function initHeroFilm(): HeroFilmHandle {
   const film = document.querySelector<HTMLElement>('[data-hero-film]')
-  if (!film) return
+  if (!film) return settled
 
   const frame = film.querySelector<HTMLElement>('[data-hero-frame]')
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  // The still is part of the composition either way.
-  const reveal = () =>
-    gsap.to(film, {
-      autoAlpha: 1,
-      duration: reduce ? 0 : 1.4,
-      ease: 'power2.out',
-    })
-
+  // Reduced motion keeps the still, and the still is already part of the
+  // composition: there is nothing to wait for.
   if (reduce) {
     gsap.set(film, { autoAlpha: 1 })
-    return
+    return settled
   }
 
-  let started = false
+  const reveal = () => {
+    gsap.to(film, { autoAlpha: 1, duration: 1.4, ease: 'power2.out' })
+  }
+
+  if (!frame || connectionIsFrugal()) {
+    return { playing: Promise.resolve(), reveal }
+  }
+
   let player: HTMLIFrameElement | null = null
 
-  const startFilm = () => {
-    if (started || !frame || connectionIsFrugal()) return
-    started = true
+  const command = (func: 'playVideo' | 'pauseVideo') => {
+    player?.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args: [] }), '*')
+  }
+
+  const playing = new Promise<void>((resolve) => {
+    let done = false
+    const finish = () => {
+      if (done) return
+      done = true
+      window.clearTimeout(cap)
+      window.removeEventListener('message', onMessage)
+      resolve()
+    }
+    const cap = window.setTimeout(finish, HARD_CAP)
+
+    // The embed reports its own state over postMessage once it is listening.
+    // Both message shapes the IFrame API uses are accepted, and only messages
+    // from this player are read.
+    const onMessage = (event: MessageEvent) => {
+      if (!/\byoutube(-nocookie)?\.com$/.test(new URL(event.origin).hostname)) return
+      if (player && event.source !== player.contentWindow) return
+      let data: unknown = event.data
+      if (typeof data === 'string') {
+        try {
+          data = JSON.parse(data)
+        } catch {
+          return
+        }
+      }
+      const payload = data as { event?: string; info?: number | { playerState?: number } }
+      const state =
+        typeof payload?.info === 'number' ? payload.info : payload?.info?.playerState
+      if (state === 1) finish()
+    }
+    window.addEventListener('message', onMessage)
 
     const params = new URLSearchParams({
       autoplay: '1',
@@ -66,6 +113,7 @@ export function initHeroFilm(ready: Promise<void>) {
       iv_load_policy: '3',
       cc_load_policy: '0',
       enablejsapi: '1',
+      origin: window.location.origin,
       // Skip the opening seconds so the footage starts on the action.
       start: '6',
     })
@@ -77,24 +125,33 @@ export function initHeroFilm(ready: Promise<void>) {
     player.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin')
     player.setAttribute('tabindex', '-1')
     player.setAttribute('aria-hidden', 'true')
-    player.loading = 'lazy'
     gsap.set(player, { autoAlpha: 0 })
     frame.appendChild(player)
 
-    player.addEventListener(
+    const embed = player
+    embed.addEventListener(
       'load',
-      () => gsap.to(player, { autoAlpha: 1, duration: 1.6, ease: 'power2.out' }),
+      () => {
+        gsap.to(embed, { autoAlpha: 1, duration: 1.6, ease: 'power2.out' })
+
+        // The IFrame API only starts reporting once it has been greeted, and
+        // the greeting can land before the player is listening, so it repeats
+        // until the first report arrives.
+        const greet = window.setInterval(() => {
+          if (done) return window.clearInterval(greet)
+          embed.contentWindow?.postMessage(
+            JSON.stringify({ event: 'listening', id: 1, channel: 'widget' }),
+            '*',
+          )
+        }, 250)
+        window.setTimeout(() => window.clearInterval(greet), LOAD_GRACE)
+
+        // If the report never comes (autoplay refused, API blocked), stop
+        // waiting on it rather than holding the entrance.
+        window.setTimeout(finish, LOAD_GRACE)
+      },
       { once: true },
     )
-  }
-
-  const command = (func: 'playVideo' | 'pauseVideo') => {
-    player?.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args: [] }), '*')
-  }
-
-  ready.then(() => {
-    reveal()
-    gsap.delayedCall(START_DELAY, startFilm)
   })
 
   // Only play while the opening is actually on screen.
@@ -117,4 +174,6 @@ export function initHeroFilm(ready: Promise<void>) {
     },
     { once: true },
   )
+
+  return { playing, reveal }
 }

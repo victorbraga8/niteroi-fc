@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://niteroiensefc.com.br/sitemap.xml
+Sitemap: https://niteroiensefc.vercel.app/sitemap.xml

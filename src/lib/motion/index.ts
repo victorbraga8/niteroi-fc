@@ -19,10 +19,11 @@ import { initLightbox } from './lightbox'
 export function initMotion() {
   const mm = gsap.matchMedia()
 
-  // The entrance runs first and hands the opening scene a signal, so the hero
-  // does not start playing to a covered screen.
-  const { ready } = initPreloader()
-  initHeroFilm(ready)
+  // The film mounts first and runs behind the curtain; the entrance waits for
+  // it, so the counter only reaches 100% once the opening is already moving.
+  const film = initHeroFilm()
+  const { ready } = initPreloader([film.playing])
+  ready.then(film.reveal)
 
   initArenaScene(mm, ready) // 1. opening scene
   initSeasonJourney(mm) // 2. the campaign
