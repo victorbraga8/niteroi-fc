@@ -1,0 +1,17 @@
+---
+interface Props {
+  class?: string
+}
+const { class: className } = Astro.props
+---
+
+<!--
+  Official marca: NITEROIENSE FC set in regressive weights, heavy on the first
+  syllable down to light on "FC" (Manual de Marca, page 19). Split into spans so
+  the weight grade survives at any size; read aloud as a single word.
+-->
+<span class:list={['wordmark', className]} aria-label="Niteroiense FC" translate="no" data-slot="wordmark">
+  <i aria-hidden="true">NI</i><i aria-hidden="true">TE</i><i aria-hidden="true">RO</i><i
+    aria-hidden="true">IEN</i
+  ><i aria-hidden="true">SE</i><i aria-hidden="true">FC</i>
+</span>

@@ -1,0 +1,93 @@
+---
+import { Image } from 'astro:assets'
+import { leadStory, secondaryStories } from '../../data/stories'
+
+/**
+ * Edited, not dumped. One lead with real weight, three supporting stories,
+ * photography dominant, metadata quiet. All headlines are the club's own.
+ */
+---
+
+<section
+  data-band="clara"
+  class="relative"
+  style="background: var(--surface-light);"
+  aria-labelledby="editorial-titulo"
+>
+  <div class="shell pb-[clamp(5rem,12vh,8rem)]">
+    <h2 id="editorial-titulo" class="sr-only">Notícias do clube</h2>
+
+    <article class="grid items-center gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-14" data-reveal>
+      <a href={leadStory.href} class="group block overflow-hidden">
+        <Image
+          src={leadStory.image}
+          alt={leadStory.imageAlt}
+          widths={[640, 760]}
+          sizes="(min-width: 1024px) 48rem, 92vw"
+          class="w-full object-cover transition-transform duration-700 ease-[var(--ease-athletic)] group-hover:scale-[1.03]"
+          style="aspect-ratio: 16 / 8;"
+          loading="lazy"
+        />
+      </a>
+
+      <div>
+        <p
+          class="text-[0.8125rem] font-bold tracking-[0.18em] uppercase"
+          style="color: var(--nfc-azul);"
+        >
+          {leadStory.kicker}
+        </p>
+        <h3
+          class="mt-4 text-[1.9rem] leading-[1] font-black tracking-[-0.03em] uppercase lg:text-[2.9rem]"
+          style="font-family: var(--font-display), sans-serif; color: var(--ink-dark);"
+        >
+          <a href={leadStory.href} class="hover:underline underline-offset-4">{leadStory.title}</a>
+        </h3>
+        <p class="mt-5 max-w-[46ch] text-[1.0625rem] leading-[1.55]" style="color: var(--ink-dark-muted);">
+          {leadStory.standfirst}
+        </p>
+        <p class="mt-5 text-[0.8125rem] font-semibold tracking-[0.1em] uppercase" style="color: var(--ink-dark-muted);">
+          <time datetime={leadStory.date}>{leadStory.dateLabel}</time>
+        </p>
+      </div>
+    </article>
+
+    <div class="mt-14 grid gap-x-10 gap-y-10 md:grid-cols-3">
+      {
+        secondaryStories.map((story) => (
+          <article data-reveal>
+            <a href={story.href} class="group block overflow-hidden">
+              <Image
+                src={story.image}
+                alt={story.imageAlt}
+                widths={[380, 640]}
+                sizes="(min-width: 768px) 22rem, 92vw"
+                class="w-full object-cover transition-transform duration-700 ease-[var(--ease-athletic)] group-hover:scale-[1.04]"
+                style="aspect-ratio: 16 / 9;"
+                loading="lazy"
+              />
+            </a>
+            <p
+              class="mt-4 text-[0.8125rem] font-bold tracking-[0.18em] uppercase"
+              style="color: var(--nfc-azul);"
+            >
+              {story.kicker}
+            </p>
+            <h3
+              class="mt-2 text-[1.3rem] leading-[1.06] font-extrabold tracking-[-0.02em] uppercase"
+              style="font-family: var(--font-display), sans-serif; color: var(--ink-dark);"
+            >
+              <a href={story.href} class="hover:underline underline-offset-4">{story.title}</a>
+            </h3>
+            <p class="mt-3 text-[0.9375rem] leading-[1.5]" style="color: var(--ink-dark-muted);">
+              {story.standfirst}
+            </p>
+            <p class="mt-3 text-[0.8125rem] font-semibold tracking-[0.1em] uppercase" style="color: var(--ink-dark-muted);">
+              <time datetime={story.date}>{story.dateLabel}</time>
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

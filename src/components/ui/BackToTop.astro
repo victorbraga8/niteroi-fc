@@ -1,0 +1,129 @@
+---
+import Crest from './Crest.astro'
+
+/**
+ * The way back is the way in.
+ *
+ * The control carries the crest, and activating it replays the entrance: the
+ * curtain closes over the page through the MAC arc, the page is returned to the
+ * top behind it, and the curtain opens again exactly the way the loader did.
+ * The return is not a scroll, it is the transition the visitor already knows.
+ */
+---
+
+<button type="button" class="back-to-top" data-back-to-top hidden aria-label="Voltar ao topo">
+  <Crest size={30} class="back-to-top__crest" decorative />
+  <span class="back-to-top__label">Voltar ao topo</span>
+</button>
+
+<!-- The curtain, reused. Inert until the control is pressed. -->
+<div class="topo-curtain" data-topo-curtain aria-hidden="true">
+  <Crest size={180} class="topo-curtain__crest" decorative />
+</div>
+
+<style>
+  .back-to-top {
+    position: fixed;
+    right: max(clamp(1rem, 3vw, 2.25rem), env(safe-area-inset-right));
+    bottom: max(clamp(1rem, 3vw, 2.25rem), env(safe-area-inset-bottom));
+    z-index: var(--z-header);
+    display: inline-flex;
+    min-height: 52px;
+    min-width: 52px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    padding: 0;
+    border: 1px solid var(--surface-line);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface-abyss) 88%, transparent);
+    backdrop-filter: blur(10px);
+    color: var(--ink-bright);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity var(--dur-base) var(--ease-athletic),
+      transform var(--dur-base) var(--ease-athletic),
+      border-color var(--dur-fast) ease,
+      background var(--dur-fast) ease;
+  }
+
+  .back-to-top[data-visible='true'] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .back-to-top:hover {
+    border-color: var(--accent-bright);
+    background: color-mix(in srgb, var(--nfc-azul) 28%, var(--surface-abyss));
+  }
+
+  .back-to-top:active {
+    transform: translateY(1px);
+  }
+
+  .back-to-top__crest {
+    width: 30px;
+    height: 30px;
+    flex: none;
+  }
+
+  .back-to-top__label {
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .back-to-top {
+      padding-inline: 1.25rem 1.4rem;
+    }
+    .back-to-top__label {
+      display: inline;
+    }
+  }
+
+  .back-to-top[hidden] {
+    display: none;
+  }
+
+  /* ---- The curtain -------------------------------------------------------
+     Same field, same arc, same crest as the entrance. */
+  .topo-curtain {
+    position: fixed;
+    inset: 0;
+    z-index: 190;
+    display: grid;
+    place-items: center;
+    background: var(--nfc-itaipu);
+    clip-path: ellipse(150% 0% at 50% 100%);
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .topo-curtain[data-active='true'] {
+    visibility: visible;
+  }
+
+  .topo-curtain__crest {
+    width: clamp(6rem, 20vw, 11rem);
+    height: auto;
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .back-to-top {
+      transition: opacity var(--dur-fast) linear;
+      transform: none;
+    }
+    .back-to-top[data-visible='true'] {
+      transform: none;
+    }
+    .topo-curtain {
+      display: none;
+    }
+  }
+</style>

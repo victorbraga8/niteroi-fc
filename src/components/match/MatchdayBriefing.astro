@@ -1,0 +1,606 @@
+---
+import { Image } from 'astro:assets'
+import campoCaac from '../../assets/media/campo-caac-2024.jpg'
+import campoParaty from '../../assets/media/campo-paraty-2024.jpg'
+import acaoRiostrense from '../../assets/media/acao-riostrense-2024.jpg'
+import golResende from '../../assets/media/gol-resende-2024.jpg'
+import type { Match, MatchdayInfo } from '../../data/types'
+
+interface Props {
+  match: Match
+  info: MatchdayInfo
+}
+
+const { match, info } = Astro.props
+
+const gallery = [
+  {
+    image: campoCaac,
+    alt: 'Torcida do Niteroiense no entorno da Concha Acústica em dia de jogo',
+    tag: 'Vila Niteroiense',
+  },
+  {
+    image: acaoRiostrense,
+    alt: 'Jogadores do Niteroiense em movimento durante partida na Concha Acústica',
+    tag: 'Em campo',
+  },
+  {
+    image: golResende,
+    alt: 'Torcida e elenco do Niteroiense comemorando um gol',
+    tag: 'A festa da torcida',
+  },
+]
+---
+
+<!--
+  Everything a supporter needs before walking to the Concha, and nothing that
+  has not been published. No ticket link is invented: the club sells on site.
+
+  Set in the same light band as "A cidade joga junto", with a hard top edge
+  (a stripe laid across the dark page) and the campaign's own dark field
+  rising into its bottom edge. The photographs close the section as a bar,
+  the same real frames the club published, each opening full size, so the
+  invitation ends on people rather than on logistics.
+-->
+<section
+  data-band="clara"
+  class="matchday relative overflow-hidden"
+  aria-labelledby="dia-de-jogo-titulo"
+  data-slot="matchday-briefing"
+>
+  <!-- The campaign's dark field rising into the band from below. The colour is
+       literal: inside data-band="clara" the surface tokens are remapped to the
+       light band, so var(--surface-abyss) would paint this invisible. -->
+  <div
+    class="pointer-events-none absolute inset-x-[-20%] -bottom-px h-[clamp(2.25rem,4.5vw,3.25rem)]"
+    style="background: #060c1c; border-radius: 50% 50% 0 0 / 100% 100% 0 0;"
+    aria-hidden="true"
+  >
+  </div>
+
+  <!-- The bottom padding clears the arc, so the photo bar never sits inside it. -->
+  <div class="shell relative z-10 pt-[clamp(4.5rem,9vh,7rem)] pb-[clamp(5rem,10vh,7.5rem)]">
+    <div class="flex flex-wrap items-end justify-between gap-x-8 gap-y-3">
+      <div>
+        <p class="matchday__kicker" data-reveal>Antes da bola rolar</p>
+        <h2
+          id="dia-de-jogo-titulo"
+          class="mt-2 font-extrabold uppercase"
+          style="font-family: var(--font-display), sans-serif; color: var(--ink-dark); font-size: clamp(1.85rem,3.6vw,2.85rem); line-height: 0.98; letter-spacing: -0.02em;"
+          data-reveal
+        >
+          Dia de jogo na Concha Acústica
+        </h2>
+      </div>
+      <p class="text-[0.8125rem] font-semibold tracking-[0.1em] text-[var(--ink-faint)] uppercase">
+        {match.dateLabel} / portões às {info.gatesOpen}
+      </p>
+    </div>
+
+    <!-- Everything below belongs to one module: the practical briefing. -->
+    <div class="matchday__panel mt-9" data-reveal>
+      <div class="grid gap-5 sm:grid-cols-3">
+        <div class="matchday__card" data-tone="azul">
+          <Image
+            src={campoCaac}
+            alt=""
+            widths={[480, 760, 1040]}
+            sizes="(min-width: 1024px) 22rem, 90vw"
+            class="matchday__card-photo"
+            loading="lazy"
+          />
+          <span class="matchday__card-veil" aria-hidden="true"></span>
+          <div class="matchday__card-body">
+            <div class="matchday__card-head">
+              <span class="matchday__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="19" height="19">
+                  <path
+                    d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linejoin="round"></path>
+                  <circle cx="12" cy="9.5" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+                </svg>
+              </span>
+              <h3 class="matchday__label">{info.fanZone.name}</h3>
+            </div>
+            <p class="mt-3 text-[1.05rem] leading-snug font-semibold text-white">
+              Aberta das {info.fanZone.opens} às {info.fanZone.closes}
+            </p>
+            <p class="mt-1.5 text-[0.9375rem] text-white/75">
+              {info.fanZone.address}
+            </p>
+          </div>
+        </div>
+
+        <div class="matchday__card" data-tone="niteroiense">
+          <Image
+            src={golResende}
+            alt=""
+            widths={[480, 760, 1040]}
+            sizes="(min-width: 1024px) 22rem, 90vw"
+            class="matchday__card-photo"
+            loading="lazy"
+          />
+          <span class="matchday__card-veil" aria-hidden="true"></span>
+          <div class="matchday__card-body">
+            <div class="matchday__card-head">
+              <span class="matchday__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="19" height="19">
+                  <path
+                    d="M4 8.5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1.2a1.7 1.7 0 0 0 0 3.2v1.6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1.6a1.7 1.7 0 0 0 0-3.2Z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linejoin="round"></path>
+                  <path d="M9 6.5v11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="2.4 2.4"
+                  ></path>
+                </svg>
+              </span>
+              <h3 class="matchday__label">Ingressos</h3>
+            </div>
+            <dl class="mt-3 space-y-2.5">
+              <div class="flex items-baseline justify-between gap-4">
+                <dt class="text-[0.9375rem] text-white/70">Inteira</dt>
+                <dd class="text-[1.15rem] font-bold text-white">
+                  {info.tickets.full}
+                </dd>
+              </div>
+              <div class="flex items-baseline justify-between gap-4">
+                <dt class="text-[0.9375rem] text-white/70">Meia-entrada</dt>
+                <dd class="text-[1.15rem] font-bold text-white">
+                  {info.tickets.half}
+                </dd>
+              </div>
+              <div class="matchday__free">
+                <dt class="text-[0.9375rem] font-semibold text-white/85">
+                  {info.tickets.free}
+                </dt>
+                <dd class="text-[0.9375rem] font-extrabold uppercase tracking-[0.04em]" style="color: #b9d3ff;">
+                  Gratuito
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        <div class="matchday__card" data-tone="itaipu">
+          <Image
+            src={campoParaty}
+            alt=""
+            widths={[480, 760, 1040]}
+            sizes="(min-width: 1024px) 22rem, 90vw"
+            class="matchday__card-photo"
+            loading="lazy"
+          />
+          <span class="matchday__card-veil" aria-hidden="true"></span>
+          <div class="matchday__card-body">
+            <div class="matchday__card-head">
+              <span class="matchday__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="19" height="19">
+                  <path
+                    d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4Z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"></path>
+                  <path d="M8 2v16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  ></path>
+                  <path d="M16 6v16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  ></path>
+                </svg>
+              </span>
+              <h3 class="matchday__label">Acessos</h3>
+            </div>
+            <ul class="mt-3 space-y-3">
+              {
+                info.access.map((entry) => (
+                  <li>
+                    <p class="text-[1.05rem] leading-snug font-semibold text-white">
+                      {entry.label} / {entry.street}
+                    </p>
+                    <p class="text-[0.9375rem] text-white/70">{entry.audience}</p>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Vila's attractions, inline and centred: a quick list, not a fourth card. -->
+      <div class="matchday__attractions">
+        <span class="matchday__attractions-label">Atrações na Vila</span>
+        <ul class="matchday__attractions-list">
+          {
+            info.fanZone.attractions.map((item) => (
+              <li class="matchday__pill">{item}</li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- The sales rule belongs to the whole module, not to one column. -->
+      <p class="matchday__note">
+        <span class="matchday__note-key">Venda</span>
+        <span class="matchday__note-text">{info.tickets.salesNote}</span>
+      </p>
+    </div>
+
+    <!-- The invitation closes on people, in the club's own frames, side by side. -->
+    <div class="matchday__gallery" data-reveal>
+      {
+        gallery.map((item) => (
+          <a
+            href={item.image.src}
+            class="matchday__photo-frame"
+            data-lightbox="dia-de-jogo"
+            data-type="image"
+            aria-label={`Ampliar imagem: ${item.tag}`}
+          >
+            <Image
+              src={item.image}
+              alt={item.alt}
+              widths={[560, 860, 1120]}
+              sizes="(min-width: 1024px) 24rem, 33vw"
+              class="matchday__photo"
+              loading="lazy"
+            />
+            <span class="matchday__photo-tag">{item.tag}</span>
+            <span class="matchday__photo-zoom" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m20 20-3.5-3.5M11 8v6M8 11h6" stroke-linecap="round"></path>
+              </svg>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+    <p class="matchday__credit">Imagens: Niteroiense na Carioca Série C 2024 / Niteroiense TV</p>
+  </div>
+</section>
+
+<style>
+  .matchday {
+    background: var(--surface-light);
+    border-top: 1px solid #cbd7ec;
+  }
+
+  .matchday__kicker {
+    font-family: var(--font-text), sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--nfc-azul);
+  }
+
+  /* One module: the three cards, the attractions and the sales rule belong
+     together, set apart from the page ground so they read as one panel. */
+  .matchday__panel {
+    padding: clamp(1.5rem, 3.6vw, 2.25rem);
+    background: #f5f8fd;
+    border: 1px solid #dbe3f2;
+    border-radius: var(--radius-plate);
+  }
+
+  /* Each card carries real colour (or a real photograph), not white plate
+     with a coloured accent: that read as generic dashboard chrome. Flat,
+     no drop shadow, no icon bubble. */
+  .matchday__card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 1.35rem 1.4rem 1.5rem;
+    border-radius: var(--radius-plate);
+    background: #14305f;
+    color: #fff;
+  }
+
+  /* A hairline that only exists on hover, the same answer the photo cells in
+     the rest of the page give. */
+  .matchday__card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border: 1px solid transparent;
+    border-radius: inherit;
+    pointer-events: none;
+    transition: border-color 260ms var(--ease-athletic);
+  }
+
+  .matchday__card:hover::after {
+    border-color: #5a90ff;
+  }
+
+  .matchday__card-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 38%;
+    filter: saturate(1.15) contrast(1.08);
+    transition: transform 520ms var(--ease-athletic);
+  }
+
+  .matchday__card:hover .matchday__card-photo {
+    transform: scale(1.06);
+  }
+
+  /* One palette, three values of it. At rest the photograph is texture under
+     the colour; hovering lifts the duotone and the frame resolves. */
+  .matchday__card-veil {
+    position: absolute;
+    inset: 0;
+    transition: opacity 320ms var(--ease-athletic);
+  }
+
+  .matchday__card:hover .matchday__card-veil {
+    opacity: 0.85;
+  }
+
+  .matchday__card[data-tone='azul'] .matchday__card-veil {
+    background: linear-gradient(165deg, rgba(15, 35, 73, 0.8) 0%, rgba(6, 12, 28, 0.94) 100%);
+  }
+
+  .matchday__card[data-tone='niteroiense'] .matchday__card-veil {
+    background: linear-gradient(165deg, rgba(44, 101, 213, 0.84) 0%, rgba(17, 47, 113, 0.96) 100%);
+  }
+
+  .matchday__card[data-tone='itaipu'] .matchday__card-veil {
+    background: linear-gradient(165deg, rgba(15, 35, 73, 0.88) 0%, rgba(6, 12, 28, 0.97) 100%);
+  }
+
+  .matchday__card-body {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Icon and title on one line: the icon is a mark, not a badge. */
+  .matchday__card-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  }
+
+  .matchday__icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    color: #fff;
+  }
+
+  .matchday__label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  /* Label above, list below, both centred: a quick, calm list, not a
+     fourth card. */
+  .matchday__attractions {
+    margin-top: 1.6rem;
+    border-top: 1px solid #dbe3f2;
+    padding-top: 1.25rem;
+    text-align: center;
+  }
+
+  .matchday__attractions-label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-dark-muted);
+  }
+
+  .matchday__attractions-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+
+  /* Attractions carry their own blue at rest, not only on hover. */
+  .matchday__pill {
+    position: relative;
+    padding: 0.45rem 0.9rem 0.45rem 1.55rem;
+    border: 1px solid rgba(44, 101, 213, 0.3);
+    border-radius: 999px;
+    background: rgba(44, 101, 213, 0.09);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--nfc-itaipu);
+    cursor: default;
+    transition:
+      color 220ms var(--ease-athletic),
+      background 220ms var(--ease-athletic),
+      border-color 220ms var(--ease-athletic),
+      transform 220ms var(--ease-athletic);
+  }
+
+  .matchday__pill::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0.7rem;
+    width: 5px;
+    height: 5px;
+    margin-top: -2.5px;
+    border-radius: 999px;
+    background: var(--nfc-azul);
+  }
+
+  .matchday__pill:hover {
+    color: #fff;
+    background: var(--nfc-azul);
+    border-color: var(--nfc-azul);
+    transform: translateY(-2px);
+  }
+
+  .matchday__pill:hover::before {
+    background: #fff;
+  }
+
+  .matchday__free {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.35rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-plate);
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  .matchday__note {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    border-top: 1px solid #dbe3f2;
+    padding-top: 1.15rem;
+    text-align: center;
+  }
+
+  .matchday__note-key {
+    flex: none;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: var(--nfc-azul);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .matchday__note-text {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--ink-dark);
+  }
+
+  /* The photo bar: three real frames, side by side, closing the section, each
+     opening full size. */
+  .matchday__gallery {
+    margin-top: clamp(2.25rem, 5vh, 3rem);
+    display: flex;
+    gap: 0.85rem;
+  }
+
+  .matchday__photo-frame {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    flex: 1 1 0;
+    min-width: 0;
+    height: clamp(7rem, 14vw, 11rem);
+    border: 1px solid #cbd7ec;
+    border-radius: var(--radius-plate);
+    transition: border-color 220ms var(--ease-athletic);
+  }
+
+  .matchday__photo-frame:hover,
+  .matchday__photo-frame:focus-visible {
+    border-color: var(--nfc-azul);
+  }
+
+  .matchday__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+    filter: saturate(1.12) contrast(1.05);
+    transition: transform 420ms var(--ease-athletic);
+  }
+
+  .matchday__photo-frame:hover .matchday__photo,
+  .matchday__photo-frame:focus-visible .matchday__photo {
+    transform: scale(1.05);
+  }
+
+  .matchday__photo-tag {
+    position: absolute;
+    bottom: 0.6rem;
+    left: 0.6rem;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(11, 23, 52, 0.78);
+    backdrop-filter: blur(6px);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .matchday__photo-zoom {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    display: grid;
+    width: 30px;
+    height: 30px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 999px;
+    background: rgba(11, 23, 52, 0.45);
+    color: #fff;
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transform: scale(0.9);
+    transition:
+      opacity 220ms var(--ease-athletic),
+      transform 220ms var(--ease-athletic),
+      background 220ms var(--ease-athletic);
+  }
+
+  .matchday__photo-frame:hover .matchday__photo-zoom,
+  .matchday__photo-frame:focus-visible .matchday__photo-zoom {
+    opacity: 1;
+    transform: scale(1);
+    background: var(--nfc-azul);
+    border-color: var(--nfc-azul);
+  }
+
+  .matchday__credit {
+    margin-top: 0.85rem;
+    font-size: 0.8125rem;
+    color: var(--ink-faint);
+  }
+
+  @media (max-width: 639.98px) {
+    .matchday__photo-tag {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .matchday__pill,
+    .matchday__photo,
+    .matchday__photo-frame,
+    .matchday__photo-zoom,
+    .matchday__card-photo,
+    .matchday__card-veil {
+      transition: none;
+    }
+    .matchday__pill:hover,
+    .matchday__card:hover .matchday__card-photo {
+      transform: none;
+    }
+  }
+</style>

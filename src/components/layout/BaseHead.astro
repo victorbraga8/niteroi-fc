@@ -1,0 +1,48 @@
+---
+import { Font } from 'astro:assets'
+import { club } from '../../data/club'
+
+interface Props {
+  title: string
+  description: string
+  ogImage?: string
+}
+
+const { title, description, ogImage = '/brand/nfc-crest.png' } = Astro.props
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url)
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical.href} />
+
+<link rel="icon" href="/brand/favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="/brand/nfc-crest.png" />
+<meta name="theme-color" content={club.colors.itaipu} />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={club.name} />
+<meta property="og:locale" content="pt_BR" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical.href} />
+<meta property="og:image" content={new URL(ogImage, Astro.site ?? Astro.url).href} />
+<meta name="twitter:card" content="summary_large_image" />
+
+<Font cssVariable="--font-display" preload />
+<Font cssVariable="--font-text" preload />
+
+<script is:inline>
+  // Decide before first paint whether scroll choreography is welcome, so
+  // nothing is hidden for a visitor who will never see it revealed.
+  ;(function () {
+    try {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!reduce) document.documentElement.classList.add('motion-ready')
+    } catch (e) {
+      /* leave content visible */
+    }
+  })()
+</script>

@@ -1,0 +1,209 @@
+---
+import { Image } from 'astro:assets'
+import ArenaCanvas from '../three/ArenaCanvas.astro'
+import HeroFilm from '../three/HeroFilm.astro'
+import MatchCenter from '../match/MatchCenter.astro'
+import crestNegativo from '../../assets/brand/nfc-crest-negativo.png'
+import { campaign, nextMatch } from '../../data/season'
+import { club } from '../../data/club'
+import { currentMode, motion } from '../../config/experience'
+
+/**
+ * CORE SCENE 01 - Niterói em campo
+ *
+ * One continuous transformation, scrubbed by scroll: the identity of the club
+ * opens the page, the camera travels into the arena, the real numbers of the
+ * campaign arrive as typography, and the same space resolves into the next
+ * fixture. There is no cut between "hero" and "match centre"; it is one object
+ * changing state, and the whole timeline reverses.
+ *
+ * Without the scroll layer (no scripting, or reduced motion) the three layers
+ * simply stack in document order over a composed static arena. Nothing is
+ * hidden, nothing is lost, the hierarchy is the same.
+ */
+
+const numbers = [
+  { value: campaign.points, label: 'Ponto', pluralLabel: 'Pontos' },
+  { value: campaign.played, label: 'Jogo', pluralLabel: 'Jogos' },
+  { value: campaign.wins, label: 'Vitória', pluralLabel: 'Vitórias' },
+]
+
+const pad = (n: number) => String(n).padStart(2, '0')
+---
+
+<section
+  id="agora"
+  data-scene="arena"
+  class="relative"
+  style={`--scene-vh-mobile:${motion.arenaSceneVh.mobile}; --scene-vh-desktop:${motion.arenaSceneVh.desktop};`}
+  aria-label="O momento atual do Niteroiense"
+>
+  <div
+    class="relative flex min-h-[100svh] w-full flex-col justify-center gap-[clamp(4rem,12vh,8rem)] overflow-hidden py-[clamp(6rem,14vh,8rem)]"
+    data-arena-viewport
+  >
+    <HeroFilm />
+    <ArenaCanvas />
+
+    <!-- Midground: the crest at architectural scale. Its own arc sits over the
+         arc of the arena behind it, so identity and space are the same form at
+         two different sizes. -->
+    <div
+      class="pointer-events-none absolute inset-0 flex items-center justify-center"
+      data-arena-crest
+      aria-hidden="true"
+    >
+      <Image
+        src={crestNegativo}
+        alt=""
+        width={760}
+        height={760}
+        densities={[1, 2]}
+        loading="eager"
+        fetchpriority="high"
+        class="w-[clamp(19rem,62vw,34rem)] opacity-[0.2] lg:w-[clamp(24rem,44vw,36rem)]"
+        style="filter: drop-shadow(0 0 60px rgba(90,144,255,0.42));"
+      />
+    </div>
+
+    <!-- Layer 1 - identity -->
+    <div class="shell relative z-10 w-full text-center" data-arena-layer="abertura">
+      <p
+        class="t-label mb-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1"
+        data-arena-meta
+      >
+        <span class="text-[var(--accent-bright)]">{club.competition}</span>
+        <span class="text-[var(--ink-faint)]" aria-hidden="true">/</span>
+        <span>{club.homeVenue}</span>
+      </p>
+
+      <h1 class="t-monument text-glow-hair text-white">
+        <span class="line-mask"><span class="block" data-arena-word>Niterói</span></span>
+        <span class="line-mask"
+          ><span class="block text-[var(--accent-bright)]" data-arena-word>em campo</span></span
+        >
+      </h1>
+
+      <div class="mx-auto mt-8 max-w-[46rem] text-center" data-arena-standfirst>
+        <p class="hero-lede">O Clube voltou aos gramados em 2024.</p>
+        <p class="hero-lede-sub">
+          Em 2026 disputa a <strong>Série B1</strong> com o objetivo declarado: o acesso à Série A2.
+        </p>
+      </div>
+    </div>
+
+    <!-- Layer 2 - the campaign, as broadcast typography -->
+    <div class="shell relative z-10 w-full" data-arena-layer="numeros">
+      <div class="flex flex-wrap items-end justify-center gap-x-[clamp(1.5rem,6vw,5rem)] gap-y-6">
+        {
+          numbers.map((item) => (
+            <div class="flex items-end gap-3" data-arena-number>
+              <span class="t-score text-white" style="font-size: clamp(4.25rem, 16vw, 14rem);">
+                {pad(item.value)}
+              </span>
+              <span
+                class="pb-[0.35em] text-[0.8125rem] font-bold tracking-[0.16em] uppercase"
+                style="color: var(--accent-bright);"
+              >
+                {item.value === 1 ? item.label : item.pluralLabel}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+      <p class="mt-9 flex justify-center">
+        <span class="score-banner">
+          {campaign.goalsFor} gols marcados e {campaign.goalsAgainst} sofrido{
+            campaign.goalsAgainst === 1 ? '' : 's'
+          } em {campaign.played} rodadas
+        </span>
+      </p>
+    </div>
+
+    <!-- Layer 3 - the same space, now the next fixture -->
+    <div class="shell relative z-10 w-full" data-arena-layer="partida" id="proximo-desafio">
+      <div class="mx-auto max-w-[min(54rem,100%)]">
+        <MatchCenter
+          match={nextMatch}
+          kicker={currentMode.matchKicker}
+          headline={currentMode.matchHeadline}
+          support={currentMode.matchSupport}
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* The opening statement, and the commitment that follows it. */
+  .hero-lede {
+    font-family: var(--font-display), sans-serif;
+    font-size: clamp(1.25rem, 2.1vw, 1.75rem);
+    font-weight: 700;
+    line-height: 1.14;
+    letter-spacing: -0.015em;
+    color: #fff;
+    text-wrap: balance;
+  }
+
+  .hero-lede-sub {
+    margin-top: 0.6rem;
+    font-size: clamp(1.0625rem, 1.35vw, 1.25rem);
+    line-height: 1.48;
+    color: var(--ink-muted);
+    text-wrap: balance;
+  }
+
+  .hero-lede-sub strong {
+    font-weight: 800;
+    color: #fff;
+  }
+
+  /* The campaign line reads as a broadcast banner, not as a footnote. */
+  .score-banner {
+    display: inline-block;
+    max-width: 100%;
+    padding: 0.72rem 1.5rem;
+    background: var(--nfc-azul);
+    border-radius: 999px;
+    font-size: clamp(0.9375rem, 1.15vw, 1.0625rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    box-shadow: 0 12px 40px rgba(44, 101, 213, 0.32);
+  }
+
+  /* The pinned interpretation only exists when the scroll layer is running. */
+  html.motion-ready [data-scene='arena'] {
+    height: calc(var(--scene-vh-mobile) * 1svh);
+  }
+
+  html.motion-ready [data-arena-viewport] {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 0;
+    display: block;
+    padding-block: 0;
+  }
+
+  html.motion-ready [data-arena-layer] {
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  html.motion-ready [data-arena-layer='numeros'],
+  html.motion-ready [data-arena-layer='partida'] {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  @media (min-width: 1024px) {
+    html.motion-ready [data-scene='arena'] {
+      height: calc(var(--scene-vh-desktop) * 1svh);
+    }
+  }
+</style>

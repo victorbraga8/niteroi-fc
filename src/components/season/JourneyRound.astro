@@ -1,0 +1,173 @@
+---
+import CrestBadge from '../match/CrestBadge.astro'
+import type { Match } from '../../data/types'
+
+interface Props {
+  match: Match
+  /** The fixture that carries the tension: the one the club plays next. */
+  isNext?: boolean
+}
+
+const { match, isNext = false } = Astro.props
+const opponent = match.side === 'casa' ? match.away : match.home
+const scored = match.score ? (match.side === 'casa' ? match.score.home : match.score.away) : null
+const conceded = match.score ? (match.side === 'casa' ? match.score.away : match.score.home) : null
+
+const resultTone = {
+  V: { color: 'var(--result-win)', label: 'Vitória' },
+  E: { color: 'var(--result-draw)', label: 'Empate' },
+  D: { color: 'var(--result-loss)', label: 'Derrota' },
+} as const
+
+const tone = match.result ? resultTone[match.result] : null
+const state = match.status === 'encerrado' ? 'resolvido' : isNext ? 'agora' : 'aberto'
+---
+
+<article
+  class="journey-round relative flex h-full min-h-[20rem] flex-col justify-between p-6 lg:min-h-[23rem] lg:p-8"
+  data-journey-round
+  data-state={state}
+  aria-label={`Rodada ${match.round}, ${match.home.name} contra ${match.away.name}`}
+>
+  <header class="flex items-start justify-between gap-4">
+    <div>
+      <p class="t-score text-[2.75rem] lg:text-[3.5rem]" data-round-number>
+        {String(match.round).padStart(2, '0')}
+      </p>
+      <p class="mt-1 text-[0.8125rem] font-bold tracking-[0.18em] uppercase" data-round-caption>
+        {match.side === 'casa' ? 'Em casa' : 'Fora'} / {match.dateLabel}
+      </p>
+    </div>
+    <CrestBadge club={opponent} size={52} class="shrink-0" />
+  </header>
+
+  <div class="mt-8">
+    <p
+      class="text-[1.4rem] leading-[1.05] font-extrabold tracking-[-0.02em] uppercase lg:text-[1.85rem]"
+      style="font-family: var(--font-display), sans-serif;"
+      data-round-opponent
+    >
+      {opponent.name}
+    </p>
+
+    {
+      scored !== null && conceded !== null ? (
+        <p class="mt-4 flex items-baseline gap-3">
+          <span class="t-score text-[3.25rem] lg:text-[4.25rem]" data-round-score>
+            {scored}
+            <span class="px-0.5 opacity-40">-</span>
+            {conceded}
+          </span>
+          <span
+            class="text-[0.8125rem] font-bold tracking-[0.14em] uppercase"
+            style={`color:${tone?.color}`}
+          >
+            {tone?.label}
+          </span>
+        </p>
+      ) : (
+        <p class="mt-4 flex items-baseline gap-3">
+          <span class="t-score text-[2.25rem] lg:text-[2.75rem]" data-round-score>
+            {match.kickoffLabel}
+          </span>
+          <span
+            class="text-[0.8125rem] font-bold tracking-[0.14em] uppercase"
+            style={isNext ? 'color: var(--accent-bright)' : 'color: var(--ink-faint)'}
+          >
+            {isNext ? 'A seguir' : 'A disputar'}
+          </span>
+        </p>
+      )
+    }
+  </div>
+
+  <footer class="mt-6">
+    <p class="text-[0.8125rem] text-[var(--ink-faint)]">{match.venue}</p>
+    {match.note && <p class="mt-2 max-w-[30ch] text-[0.875rem] leading-snug">{match.note}</p>}
+  </footer>
+</article>
+
+<style>
+  .journey-round {
+    background: var(--surface-deep);
+    border: 1px solid var(--surface-line);
+    color: var(--ink-muted);
+    transition:
+      background var(--dur-base) var(--ease-athletic),
+      border-color var(--dur-base) var(--ease-athletic),
+      transform 320ms var(--ease-athletic),
+      box-shadow 320ms var(--ease-athletic);
+  }
+
+  /* A round answers the pointer: it lifts and its number takes the accent. */
+  .journey-round:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent-bright);
+    box-shadow: 0 22px 48px rgba(6, 12, 28, 0.55);
+  }
+
+  .journey-round:hover [data-round-opponent] {
+    color: #fff;
+  }
+
+  .journey-round:hover [data-round-number] {
+    color: var(--accent-bright);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .journey-round {
+      transition: border-color var(--dur-fast) linear;
+    }
+    .journey-round:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  /* Played rounds read as settled: the result is stated, the surface recedes. */
+  .journey-round[data-state='resolvido'] [data-round-number],
+  .journey-round[data-state='resolvido'] [data-round-caption] {
+    color: var(--ink-faint);
+  }
+  .journey-round[data-state='resolvido'] [data-round-opponent],
+  .journey-round[data-state='resolvido'] [data-round-score] {
+    color: var(--ink-muted);
+  }
+
+  /* The next fixture is the only one allowed to carry tension. */
+  .journey-round[data-state='agora'] {
+    background: linear-gradient(160deg, var(--surface-raised), var(--surface-base));
+    border-color: var(--accent-bright);
+  }
+  .journey-round[data-state='agora'] [data-round-number] {
+    color: var(--accent-bright);
+  }
+  .journey-round[data-state='agora'] [data-round-caption] {
+    color: var(--ink-muted);
+  }
+  .journey-round[data-state='agora'] [data-round-opponent],
+  .journey-round[data-state='agora'] [data-round-score] {
+    color: #fff;
+  }
+
+  /* What is still open stays open: outlined, quiet, waiting. */
+  .journey-round[data-state='aberto'] {
+    background: transparent;
+  }
+  .journey-round[data-state='aberto'] [data-round-number],
+  .journey-round[data-state='aberto'] [data-round-opponent] {
+    color: var(--ink-muted);
+  }
+  .journey-round[data-state='aberto'] [data-round-caption],
+  .journey-round[data-state='aberto'] [data-round-score] {
+    color: var(--ink-faint);
+  }
+
+  /* While a round crosses the focus band, it comes forward. */
+  .journey-round[data-focus='true'] {
+    border-color: color-mix(in srgb, var(--accent-bright) 60%, var(--surface-line));
+  }
+  .journey-round[data-focus='true'] [data-round-opponent] {
+    color: #fff;
+  }
+</style>

@@ -1,0 +1,327 @@
+---
+import { Image } from 'astro:assets'
+import JourneyRound from '../season/JourneyRound.astro'
+import campoParaty from '../../assets/media/campo-paraty-2024.jpg'
+import { campaign, fixtures, nextMatch, standingsAvailable } from '../../data/season'
+import { club } from '../../data/club'
+
+/**
+ * CORE SCENE 02 - A campanha
+ *
+ * The season is a trajectory, not a carousel. On desktop the vertical scroll
+ * drives a horizontal traverse of the eleven rounds: what is played sits
+ * behind, the next fixture carries the tension, what is open stays open, and
+ * the traverse ends on the reason the campaign exists.
+ *
+ * The section header travels with the traverse rather than scrolling away, so
+ * the visitor always knows what they are crossing. On small screens the same
+ * reading becomes a vertical rail: forcing the horizontal pan onto a phone
+ * would fight the thumb instead of helping it.
+ */
+
+const form = fixtures
+  .filter((m) => m.status === 'encerrado' && m.result)
+  .map((m) => m.result!)
+
+const resultLabel = { V: 'Vitória', E: 'Empate', D: 'Derrota' } as const
+const resultColor = {
+  V: 'var(--result-win)',
+  E: 'var(--result-draw)',
+  D: 'var(--result-loss)',
+} as const
+---
+
+<section
+  id="campanha"
+  data-scene="journey"
+  class="journey relative overflow-hidden"
+  aria-labelledby="campanha-titulo"
+>
+  <div class="journey__bg" aria-hidden="true">
+    <Image
+      src={campoParaty}
+      alt=""
+      widths={[960, 1280]}
+      sizes="100vw"
+      class="journey__photo"
+      loading="lazy"
+    />
+    <span class="journey__duotone"></span>
+    <span class="journey__veil"></span>
+  </div>
+
+  <div class="journey-viewport relative z-10" data-journey-viewport>
+    <div class="journey-frame">
+      <!-- Header of the scene. It stays while the rounds go past. -->
+      <div class="shell journey-head">
+        <div class="flex flex-wrap items-end justify-between gap-x-10 gap-y-5">
+          <div>
+            <h2 id="campanha-titulo" class="t-headline text-white" data-reveal>A campanha</h2>
+            <p class="t-body mt-3 max-w-[44ch] text-[1rem]" data-reveal>
+              Onze rodadas na Série B1. Estamos percorrendo a terceira.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-2" data-reveal>
+            <p class="flex items-center gap-1.5">
+              {
+                form.map((result) => (
+                  <span
+                    class="grid h-8 w-8 place-items-center text-[0.8125rem] font-extrabold"
+                    style={`border-radius:999px; color:#0b1734; background:${resultColor[result]};`}
+                    title={resultLabel[result]}
+                  >
+                    {result}
+                  </span>
+                ))
+              }
+            </p>
+            <p
+              class="text-[0.8125rem] font-semibold tracking-[0.08em] text-[var(--ink-muted)] uppercase"
+            >
+              {campaign.points} pontos em {campaign.played * 3} disputados
+            </p>
+
+            <!-- The traverse answers the scroll, and also answers a click. -->
+            <div class="journey-steps" role="group" aria-label="Percorrer as rodadas">
+              <button type="button" class="journey-step" data-journey-prev aria-label="Rodadas anteriores">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path
+                    d="M15 5 8 12l7 7"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path>
+                </svg>
+              </button>
+              <button type="button" class="journey-step" data-journey-next aria-label="Próximas rodadas">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path
+                    d="m9 5 7 7-7 7"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="journey-rail">
+        <div class="journey-track" data-journey-track>
+          {
+            fixtures.map((match) => (
+              <div class="journey-cell">
+                <JourneyRound match={match} isNext={match.id === nextMatch.id} />
+              </div>
+            ))
+          }
+
+          <!-- The terminal of the trajectory: what the eleven rounds are for. -->
+          <div class="journey-cell journey-cell--objective">
+            <div
+              class="relative flex h-full min-h-[20rem] flex-col justify-between overflow-hidden p-6 lg:min-h-[23rem] lg:p-8"
+              style="background: linear-gradient(150deg, var(--nfc-azul), var(--nfc-itaipu)); border: 1px solid var(--accent-bright);"
+              data-journey-round
+              data-state="objetivo"
+            >
+              <div
+                class="pointer-events-none absolute -right-16 -bottom-24 h-56 w-[22rem] opacity-25"
+                style="border-top: 2px solid #fff; border-radius: 50% 50% 0 0;"
+                aria-hidden="true"
+              >
+              </div>
+              <p class="t-label" style="color: #fff;">Objetivo da temporada</p>
+              <p
+                class="mt-6 text-[2rem] leading-[0.94] font-black tracking-[-0.03em] text-white uppercase lg:text-[2.6rem]"
+                style="font-family: var(--font-display), sans-serif;"
+              >
+                Acesso à<br />Série A2
+              </p>
+              <p class="mt-5 max-w-[28ch] text-[0.9375rem]" style="color: rgba(255,255,255,0.94);">
+                O grupo foi montado para isso, e o clube disse isso com todas as letras ao
+                apresentar o elenco de 2026.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="shell journey-foot">
+<p class="mx-auto max-w-[68ch] text-center text-[0.875rem] leading-relaxed text-[var(--ink-faint)]">
+  {
+    standingsAvailable
+      ? 'Classificação atualizada conforme a federação.'
+      : `A tabela completa da Série B1 não é publicada nos canais oficiais do ${club.shortName}.<br /> Os números acima vêm apenas dos jogos já disputados pelo clube.`
+  }
+</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .journey {
+    background: var(--surface-abyss);
+  }
+
+  /* A different ground from the block that follows, so two dark sections do
+     not read as one. */
+  .journey__bg {
+    position: absolute;
+    inset: 0;
+  }
+
+  .journey__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 45%;
+    transform: scale(1.05);
+    filter: blur(2px) saturate(1.18);
+  }
+
+  .journey__duotone {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(200deg, #1b3f8f 0%, #0b1734 100%);
+    mix-blend-mode: multiply;
+    opacity: 0.9;
+  }
+
+  .journey__veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(6, 12, 28, 0.8) 0%,
+      rgba(6, 12, 28, 0.52) 44%,
+      rgba(6, 12, 28, 0.86) 100%
+    );
+  }
+
+  /* Chevrons: the same ring the rest of the page uses for controls. */
+  .journey-steps {
+    display: none;
+    gap: 0.5rem;
+  }
+
+  .journey-step {
+    display: grid;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    border: 1px solid var(--surface-line);
+    border-radius: 999px;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    transition:
+      border-color 200ms var(--ease-athletic),
+      background 200ms var(--ease-athletic),
+      opacity 200ms var(--ease-athletic);
+  }
+
+  .journey-step:hover:not(:disabled) {
+    border-color: var(--accent-bright);
+    background: rgba(44, 101, 213, 0.22);
+  }
+
+  .journey-step:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  .journey-step:disabled {
+    opacity: 0.32;
+    cursor: default;
+  }
+
+  /* Default, and the mobile reading: a vertical rail of rounds. */
+  .journey-head {
+    padding-top: var(--section-space);
+    padding-bottom: clamp(1.75rem, 4vh, 2.75rem);
+  }
+
+  .journey-foot {
+    padding-top: clamp(1.75rem, 4vh, 2.5rem);
+    padding-bottom: var(--section-space);
+  }
+
+  .journey-rail {
+    padding-inline: var(--gutter);
+  }
+
+  .journey-track {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .journey-cell {
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .journey-track {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    html:not(.motion-ready) .journey-track {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    /* With the motion layer the rail becomes a horizontal traverse, and the
+       whole frame is pinned: header, rounds and footnote travel together. */
+    html.motion-ready .journey-viewport {
+      position: relative;
+      overflow: hidden;
+    }
+
+    html.motion-ready .journey-frame {
+      display: flex;
+      min-height: 100svh;
+      flex-direction: column;
+      justify-content: center;
+      gap: clamp(1.5rem, 3.5vh, 2.75rem);
+      padding-block: clamp(5.5rem, 11vh, 7rem) clamp(2rem, 5vh, 3rem);
+    }
+
+    html.motion-ready .journey-head,
+    html.motion-ready .journey-foot {
+      padding-block: 0;
+    }
+
+    html.motion-ready .journey-rail {
+      padding-inline: 0;
+    }
+
+    html.motion-ready .journey-track {
+      display: flex;
+      grid-template-columns: none;
+      align-items: stretch;
+      gap: 1.25rem;
+      padding-inline: var(--gutter);
+      width: max-content;
+      will-change: transform;
+    }
+
+    html.motion-ready .journey-cell {
+      width: 20.5rem;
+      flex: 0 0 auto;
+    }
+
+    html.motion-ready .journey-cell--objective {
+      width: 25rem;
+    }
+
+    /* Chevrons only exist where the traverse is horizontal. */
+    html.motion-ready .journey-steps {
+      display: flex;
+    }
+  }
+</style>

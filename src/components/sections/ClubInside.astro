@@ -1,0 +1,136 @@
+---
+import { Image } from 'astro:assets'
+import campoParaty from '../../assets/media/campo-paraty-2024.jpg'
+import { club, history } from '../../data/club'
+import { institutionalStories } from '../../data/stories'
+
+/**
+ * DENTRO DO CLUBE
+ *
+ * Institutional material stays reachable without competing with the season.
+ * The history is a real arc with a real gap in it, so it is drawn as one:
+ * 1913 to 1981, then a break, then 2024 onwards.
+ */
+---
+
+<section
+  id="clube"
+  class="relative overflow-hidden"
+  style="background: var(--surface-abyss);"
+  aria-labelledby="clube-titulo"
+>
+  <!-- Returning to the dark field, through the same arc that opened the band. -->
+  <div
+    class="pointer-events-none absolute inset-x-[-20%] -top-px h-[9vw] min-h-[2.75rem]"
+    style="background: #eef2fa;"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="shell pt-[clamp(12rem,24vh,16rem)] pb-[var(--section-space)]">
+    <h2 id="clube-titulo" class="t-headline text-white" data-reveal>Dentro do clube</h2>
+
+    <!-- 2024, o ano do retorno, fotografado pelo próprio clube. -->
+    <figure class="mt-9 lg:mt-12" data-reveal>
+      <div class="shape-arc overflow-hidden">
+        <Image
+          src={campoParaty}
+          alt="Partida do Niteroiense na Série C de 2024, vista da arquibancada"
+          widths={[760, 1280]}
+          sizes="(min-width: 1024px) 84rem, 94vw"
+          class="w-full object-cover"
+          style="aspect-ratio: 21 / 8;"
+          loading="lazy"
+        />
+      </div>
+      <figcaption class="mt-3 text-[0.8125rem] text-[var(--ink-faint)]">
+        Paraty 1 x 4 Niteroiense, Carioca Série C 2024. Imagem do canal oficial do clube.
+      </figcaption>
+    </figure>
+
+    <div class="mt-12 grid gap-x-14 gap-y-14 lg:grid-cols-[1fr_0.85fr]">
+      <!-- History as a trajectory with an honest interruption. -->
+      <div>
+        <h3 class="t-label mb-7">Desde 1913</h3>
+        <ol class="relative space-y-8 border-l border-[var(--surface-line)] pl-7">
+          {
+            history.map((entry, index) => (
+              <li class="relative" data-reveal>
+                <span
+                  class="absolute top-[0.55rem] -left-[calc(1.75rem+1px)] h-[9px] w-[9px] -translate-x-1/2"
+                  style={`border-radius:999px; background:${
+                    index === history.length - 1 ? 'var(--accent-bright)' : 'var(--surface-line)'
+                  };`}
+                  aria-hidden="true"
+                />
+                <p
+                  class="t-score text-[1.65rem]"
+                  style={
+                    index === history.length - 1
+                      ? 'color: var(--accent-bright);'
+                      : 'color: var(--ink-faint);'
+                  }
+                >
+                  {entry.year}
+                </p>
+                <p
+                  class="mt-1.5 text-[1.15rem] leading-tight font-extrabold tracking-[-0.02em] text-white uppercase"
+                  style="font-family: var(--font-display), sans-serif;"
+                >
+                  {entry.title}
+                </p>
+                <p class="mt-2 max-w-[52ch] text-[0.9375rem] leading-relaxed text-[var(--ink-muted)]">
+                  {entry.detail}
+                </p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <div class="space-y-12">
+        <!-- Institutional stories, compact, subordinated to the season. -->
+        <div data-reveal>
+          <h3 class="t-label mb-5">Comunicados e identidade</h3>
+          <ul>
+            {
+              institutionalStories.map((story) => (
+                <li class="border-b border-[var(--surface-line)] last:border-b-0">
+                  <a
+                    href={story.href}
+                    class="group flex min-h-[56px] items-center justify-between gap-6 py-4"
+                  >
+                    <span class="text-[0.9375rem] leading-snug font-semibold text-white transition-colors group-hover:text-[var(--accent-bright)]">
+                      {story.title}
+                    </span>
+                    <time
+                      datetime={story.date}
+                      class="shrink-0 text-[0.8125rem] font-semibold tracking-[0.08em] text-[var(--ink-faint)] uppercase"
+                    >
+                      {story.dateLabel.replace(' de 2026', '')}
+                    </time>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div data-reveal>
+          <h3 class="t-label mb-5">Transparência</h3>
+          <a
+            href="https://niteroiensefc.com.br/transparencia.php"
+            class="inline-flex min-h-[48px] items-center gap-3 border px-5 text-[0.8125rem] font-bold tracking-[0.1em] text-white uppercase transition-colors hover:border-[var(--accent-bright)]"
+            style="border-color: var(--surface-line); border-radius: 999px;"
+          >
+            Manual de marca e documentos
+          </a>
+          <p class="mt-4 max-w-[42ch] text-[0.875rem] leading-relaxed text-[var(--ink-faint)]">
+            As três cores desta página vêm do manual oficial: Azul Itaipu {club.colors.itaipu}, Azul
+            Niteroiense {club.colors.niteroiense} e branco.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,265 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+@theme inline {
+  --font-display: var(--font-display);
+  --font-sans: var(--font-text);
+
+  --color-abyss: var(--surface-abyss);
+  --color-deep: var(--surface-deep);
+  --color-base: var(--surface-base);
+  --color-raised: var(--surface-raised);
+  --color-hair: var(--surface-line);
+  --color-ink: var(--ink-bright);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-accent: var(--accent);
+  --color-accent-bright: var(--accent-bright);
+  --color-itaipu: var(--nfc-itaipu);
+  --color-azul: var(--nfc-azul);
+  --color-win: var(--result-win);
+  --color-draw: var(--result-draw);
+  --color-loss: var(--result-loss);
+}
+
+@layer base {
+  * {
+    min-width: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--surface-abyss);
+    color: var(--ink-bright);
+    font-family: var(--font-text), system-ui, sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display), 'Arial Narrow', sans-serif;
+    font-weight: 800;
+    line-height: 0.94;
+    letter-spacing: -0.022em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--accent-bright);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--nfc-azul);
+    color: #fff;
+  }
+
+  img,
+  canvas {
+    max-width: 100%;
+  }
+
+  /* Anchored sections, and anything the keyboard walks to, must land below
+     the fixed header rather than behind it. */
+  [id] {
+    scroll-margin-top: 88px;
+  }
+
+  a,
+  button,
+  [tabindex] {
+    scroll-margin-top: 96px;
+    scroll-margin-bottom: 24px;
+  }
+
+  /* No 300ms double-tap delay, and a tap highlight we chose on purpose. */
+  a,
+  button,
+  summary,
+  [role='button'] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(44, 101, 213, 0.24);
+  }
+
+  /* Brand names must survive machine translation intact. */
+  [translate='no'] {
+    unicode-bidi: isolate;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  /* ---- Typographic scale --------------------------------------------- */
+
+  /* Monumental line. Two words maximum, the scene carries the rest. */
+  .t-monument {
+    font-family: var(--font-display), sans-serif;
+    font-weight: 900;
+    font-size: clamp(3.4rem, 14.5vw, 12rem);
+    line-height: 0.82;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+  }
+
+  .t-headline {
+    font-family: var(--font-display), sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.1rem, 5.6vw, 4.75rem);
+    line-height: 0.92;
+    letter-spacing: -0.028em;
+    text-transform: uppercase;
+  }
+
+  .t-subhead {
+    font-family: var(--font-display), sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.35rem, 2.6vw, 2.15rem);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+  }
+
+  /* Broadcast numerals: the score language of the page. */
+  .t-score {
+    font-family: var(--font-display), sans-serif;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.05em;
+    line-height: 0.78;
+  }
+
+  .t-label {
+    font-family: var(--font-text), sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .t-body {
+    font-size: clamp(1rem, 1.05vw, 1.125rem);
+    line-height: 1.62;
+    color: var(--ink-muted);
+    max-width: var(--measure);
+  }
+
+  /* ---- Brand wordmark -------------------------------------------------
+     The official marca sets NITEROIENSE FC in regressive weights, from
+     heavy on "NI" down to light on "FC" (Manual de Marca, page 19).       */
+  .wordmark {
+    font-family: var(--font-display), sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    display: inline-flex;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .wordmark > i {
+    font-style: normal;
+  }
+  .wordmark > i:nth-child(1) { font-weight: 900; }
+  .wordmark > i:nth-child(2) { font-weight: 800; }
+  .wordmark > i:nth-child(3) { font-weight: 700; }
+  .wordmark > i:nth-child(4) { font-weight: 600; }
+  .wordmark > i:nth-child(5) { font-weight: 500; }
+  .wordmark > i:nth-child(6) { font-weight: 400; padding-left: 0.28em; }
+
+  /* ---- Shape language -------------------------------------------------
+     The crest is a ring standing over the MAC arc. Both become containers. */
+
+  /* Bottom-arc crop, the museum curve read as an image mask. */
+  .shape-arc {
+    clip-path: ellipse(150% 100% at 50% 0%);
+  }
+
+  /* Top-arc crop: the same curve inverted, for surfaces that rise. The
+     horizontal radius stays close to the box so the arch is actually read. */
+  .shape-arc-up {
+    clip-path: ellipse(78% 100% at 50% 100%);
+  }
+
+  .shape-ring {
+    border-radius: 999px;
+    border: 1px solid var(--surface-line);
+  }
+
+  /* Hairline that reads as a field line, not as a card border. */
+  .rule {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      var(--surface-line) 0%,
+      var(--surface-line) 62%,
+      transparent 100%
+    );
+  }
+
+  /* Wrapper for a display line that is revealed from behind a mask.
+     Display leading is below 1, so an acute or a tilde sits above the mask
+     edge and gets cut. The extra room is added, then removed from the flow. */
+  .line-mask {
+    display: block;
+    overflow: hidden;
+    padding-top: 0.16em;
+    margin-top: -0.16em;
+    padding-bottom: 0.06em;
+  }
+
+  /* ---- Layout --------------------------------------------------------- */
+  .shell {
+    width: 100%;
+    max-width: 90rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* ---- Motion entry state --------------------------------------------
+     Content is visible by default. Only when the head script confirms that
+     scripting is on and motion is welcome does it hide, so there is no
+     flash and no permanently invisible content if the bundle never loads. */
+  html.motion-ready [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 1.75rem, 0);
+    will-change: transform, opacity;
+  }
+
+  html.motion-ready [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@layer utilities {
+  .text-glow-hair {
+    text-shadow: 0 1px 24px rgba(6, 12, 28, 0.55);
+  }
+
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-overlay);
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+}

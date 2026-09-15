@@ -1,0 +1,130 @@
+---
+import CrestBadge from './CrestBadge.astro'
+import type { Match } from '../../data/types'
+
+interface Props {
+  match: Match
+  kicker: string
+  headline: string
+  support: string
+}
+
+const { match, kicker, headline, support } = Astro.props
+
+const kickoffDate = new Date(match.kickoff)
+const weekday = new Intl.DateTimeFormat('pt-BR', {
+  weekday: 'long',
+  timeZone: 'America/Sao_Paulo',
+}).format(kickoffDate)
+const fullDate = new Intl.DateTimeFormat('pt-BR', {
+  day: '2-digit',
+  month: 'long',
+  timeZone: 'America/Sao_Paulo',
+}).format(kickoffDate)
+---
+
+<article class="w-full text-center" data-slot="match-center" aria-labelledby="proximo-desafio-titulo">
+  <p class="t-label mb-3 text-[var(--accent-bright)]" data-match-line>{kicker}</p>
+
+  <h2 id="proximo-desafio-titulo" class="t-headline mb-8 text-white" data-match-line>
+    {headline}
+  </h2>
+
+  <!-- The confrontation itself, read as a scoreboard rather than as a card. -->
+  <div
+    class="grid grid-cols-[1fr_auto_1fr] items-center gap-4 sm:gap-8"
+    data-match-board
+    style="border-top: 1px solid var(--surface-line); border-bottom: 1px solid var(--surface-line); padding-block: clamp(1.25rem, 3vw, 2.25rem);"
+  >
+    <div class="flex flex-col items-center gap-3 text-center sm:flex-row sm:justify-end sm:text-right">
+      <CrestBadge club={match.home} size={64} class="shrink-0" />
+      <span
+        class="t-subhead text-white"
+        style="font-size: clamp(1.05rem, 2.1vw, 1.75rem); text-transform: uppercase; text-wrap: balance;"
+        >{match.home.name}</span
+      >
+    </div>
+
+    <div class="flex flex-col items-center gap-1 px-1">
+      {
+        match.score ? (
+          <span class="t-score text-white" style="font-size: clamp(2.5rem, 7vw, 4.5rem);">
+            {match.score.home}
+            <span class="px-1 text-[var(--ink-faint)]">-</span>
+            {match.score.away}
+          </span>
+        ) : (
+          <>
+            <span class="t-score text-[var(--accent-bright)]" style="font-size: clamp(1.5rem, 4vw, 2.75rem);">
+              {match.kickoffLabel}
+            </span>
+            <span class="text-[0.8125rem] font-semibold tracking-[0.1em] text-[var(--ink-muted)] uppercase">
+              {match.dateLabel}
+            </span>
+          </>
+        )
+      }
+    </div>
+
+    <div class="flex flex-col items-center gap-3 text-center sm:flex-row-reverse sm:justify-end sm:text-left">
+      <CrestBadge club={match.away} size={64} class="shrink-0" />
+      <span
+        class="t-subhead text-white"
+        style="font-size: clamp(1.05rem, 2.1vw, 1.75rem); text-transform: uppercase; text-wrap: balance;"
+        >{match.away.name}</span
+      >
+    </div>
+  </div>
+
+  <!-- Match facts. Only fields the club has actually published. -->
+  <dl
+    class="mt-7 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4"
+    data-match-line
+  >
+    <div>
+      <dt class="t-label text-[0.8125rem]">Competição</dt>
+      <dd class="mt-1 text-[0.95rem] font-semibold text-white">{match.competition}</dd>
+    </div>
+    <div>
+      <dt class="t-label text-[0.8125rem]">Rodada</dt>
+      <dd class="mt-1 text-[0.95rem] font-semibold text-white">{match.round}ª</dd>
+    </div>
+    <div>
+      <dt class="t-label text-[0.8125rem]">Local</dt>
+      <dd class="mt-1 text-[0.95rem] font-semibold text-white">{match.venue}</dd>
+    </div>
+    <div>
+      <dt class="t-label text-[0.8125rem]">Data</dt>
+      <dd class="mt-1 text-[0.95rem] font-semibold text-white capitalize">
+        <time datetime={match.kickoff}>{weekday}, {fullDate}</time>
+      </dd>
+    </div>
+  </dl>
+
+  <p class="match-support" data-match-line>{support}</p>
+</article>
+
+<style>
+  /* One line, always: the support never breaks the symmetry of the board. */
+  .match-support {
+    margin-top: 1.6rem;
+    text-align: center;
+    font-size: clamp(0.9375rem, 1.5vw, 1.1875rem);
+    line-height: 1.35;
+    color: var(--ink-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Below the width where the sentence can hold one line, it is allowed to
+     wrap rather than be cut: a truncated fact is worse than a second line. */
+  @media (max-width: 719px) {
+    .match-support {
+      white-space: normal;
+      font-size: 0.9375rem;
+      margin-inline: auto;
+      max-width: 34ch;
+    }
+  }
+</style>

@@ -1,0 +1,130 @@
+---
+import Crest from '../ui/Crest.astro'
+import Wordmark from '../ui/Wordmark.astro'
+import { primaryNav } from '../../config/navigation'
+import { nextMatch } from '../../data/season'
+import { currentMode } from '../../config/experience'
+
+const opponent = nextMatch.side === 'casa' ? nextMatch.away : nextMatch.home
+const prefix = nextMatch.side === 'casa' ? 'x' : 'fora com'
+---
+
+<header
+  class="fixed inset-x-0 top-0 z-[60] transition-colors duration-300"
+  data-site-header
+  data-slot="site-header"
+>
+  <div
+    class="pointer-events-none absolute inset-0 -z-10 opacity-0 backdrop-blur-md transition-opacity duration-300"
+    style="background: color-mix(in srgb, var(--surface-abyss) 94%, transparent); border-bottom: 1px solid var(--surface-line);"
+    data-header-scrim
+  >
+  </div>
+
+  <div
+    class="shell flex h-[68px] items-center justify-between gap-4 lg:h-[76px]"
+    style="padding-left: max(var(--gutter), env(safe-area-inset-left)); padding-right: max(var(--gutter), env(safe-area-inset-right));"
+  >
+    <a
+      href="#agora"
+      class="group flex items-center gap-3 outline-offset-4"
+      aria-label="Niteroiense FC, ir para o início"
+    >
+      <Crest size={40} loading="eager" decorative />
+      <Wordmark class="text-[13px] sm:text-[15px]" />
+    </a>
+
+    <nav aria-label="Seções principais" class="hidden items-center gap-1 lg:flex">
+      {
+        primaryNav.map((item) => (
+          <a
+            href={item.href}
+            class="rounded-[2px] px-3 py-2 text-[0.8125rem] font-semibold tracking-[0.1em] text-[var(--ink-muted)] uppercase transition-colors hover:text-white"
+            data-nav-link
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a
+        href="#proximo-desafio"
+        class="hidden items-center gap-2.5 border border-[var(--surface-line)] px-3.5 py-2 text-[0.8125rem] font-bold tracking-[0.08em] text-white uppercase transition-colors hover:border-[var(--accent-bright)] md:inline-flex"
+        style="border-radius: 999px;"
+      >
+        <span class="text-[var(--accent-bright)]">{currentMode.navLabel}</span>
+        <span class="text-[var(--ink-muted)]" aria-hidden="true">/</span>
+        <span>{prefix} {opponent.name}</span>
+        <span class="text-[var(--ink-muted)]">{nextMatch.dateLabel}</span>
+      </a>
+
+      <button
+        type="button"
+        class="inline-flex h-11 w-11 items-center justify-center border border-[var(--surface-line)] text-white lg:hidden"
+        style="border-radius: 999px;"
+        aria-expanded="false"
+        aria-controls="menu-mobile"
+        data-menu-toggle
+      >
+        <span class="sr-only">Abrir menu</span>
+        <span class="relative block h-[11px] w-[18px]" aria-hidden="true">
+          <span
+            class="absolute inset-x-0 top-0 h-[2px] bg-current transition-transform duration-300"
+            data-bar="top"></span>
+          <span
+            class="absolute inset-x-0 bottom-0 h-[2px] bg-current transition-transform duration-300"
+            data-bar="bottom"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu: the same hierarchy, sized for a thumb. -->
+  <div
+    id="menu-mobile"
+    class="shell hidden overflow-hidden lg:hidden"
+    data-mobile-menu
+    style="background: var(--surface-deep); border-bottom: 1px solid var(--surface-line);"
+  >
+    <nav aria-label="Seções principais, versão compacta" class="flex flex-col py-3">
+      {
+        primaryNav.map((item) => (
+          <a
+            href={item.href}
+            class="flex min-h-[52px] items-center border-b border-[var(--surface-line)] text-2xl font-extrabold tracking-[-0.02em] text-white uppercase last:border-b-0"
+            style="font-family: var(--font-display), sans-serif;"
+            data-mobile-link
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a
+        href="#proximo-desafio"
+        class="mt-4 mb-3 flex min-h-[52px] items-center justify-between px-4 text-[0.8125rem] font-bold tracking-[0.08em] uppercase"
+        style="background: var(--nfc-azul); color: #fff; border-radius: 999px;"
+        data-mobile-link
+      >
+        <span>{currentMode.navLabel}</span>
+        <span>{opponent.name} {nextMatch.dateLabel}</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  [data-site-header][data-stuck='true'] [data-header-scrim] {
+    opacity: 1;
+  }
+  [data-mobile-menu][data-open='true'] {
+    display: block;
+  }
+  [data-menu-toggle][aria-expanded='true'] [data-bar='top'] {
+    transform: translateY(4.5px) rotate(45deg);
+  }
+  [data-menu-toggle][aria-expanded='true'] [data-bar='bottom'] {
+    transform: translateY(-4.5px) rotate(-45deg);
+  }
+</style>

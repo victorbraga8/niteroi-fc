@@ -1,0 +1,125 @@
+---
+import { Image } from 'astro:assets'
+import { heroFilm } from '../../data/videos'
+
+/**
+ * Real match footage behind the opening.
+ *
+ * The still is the film's own frame, so the composition is complete before any
+ * player exists. The video itself is only requested a few seconds after the
+ * entrance finishes, and only when the visitor has not asked for reduced motion
+ * and is not on a metered connection. If it never arrives, the still stays and
+ * nothing about the layout changes.
+ */
+---
+
+<div class="hero-film" data-hero-film aria-hidden="true">
+  <div class="hero-film__still" data-hero-poster>
+    <Image
+      src={heroFilm.still}
+      alt=""
+      widths={[960, 1280]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+      class="hero-film__image"
+    />
+  </div>
+
+  <div class="hero-film__frame" data-hero-frame></div>
+
+  <!-- Two scrims: one for the type, one to keep the blue of the identity on
+       top of footage that was not shot for this palette. -->
+  <div class="hero-film__tint"></div>
+  <div class="hero-film__lift"></div>
+  <div class="hero-film__scrim"></div>
+</div>
+
+<style>
+  .hero-film {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .hero-film__still,
+  .hero-film__frame {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-film__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 42%;
+    transform: scale(1.12);
+    filter: blur(0.5px) saturate(1.2) contrast(1.05);
+  }
+
+  .hero-film__frame {
+    /* Softened so the footage reads as depth behind the type rather than as a
+       second thing to look at, and so broadcast text never resolves. */
+    filter: blur(1.5px) saturate(1.18) contrast(1.06);
+  }
+
+  .hero-film__frame :global(iframe) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    /* 16:9 kept while covering the viewport. Scaled well past cover so the
+       broadcast scoreboard and any burnt-in captions crop away entirely. */
+    height: 56.25vw;
+    min-height: 100%;
+    min-width: 177.78vh;
+    transform: translate(-50%, -50%) scale(1.46);
+    border: 0;
+  }
+
+  /* Duotone rather than a flat wash: the shadows go to Azul Itaipu and the
+     highlights keep their own colour, so the grass and the kit stay alive. */
+  .hero-film__tint {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(200deg, #1b3f8f 0%, #0f2349 58%, #060c1c 100%);
+    mix-blend-mode: multiply;
+    opacity: 0.72;
+  }
+
+  .hero-film__lift {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      70% 54% at 50% 44%,
+      rgba(44, 101, 213, 0.34) 0%,
+      rgba(20, 58, 140, 0.12) 46%,
+      transparent 78%
+    );
+    mix-blend-mode: screen;
+  }
+
+  .hero-film__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(6, 12, 28, 0.86) 0%,
+        rgba(6, 12, 28, 0.42) 32%,
+        rgba(6, 12, 28, 0.46) 62%,
+        rgba(6, 12, 28, 0.9) 100%
+      ),
+      /* A reading well behind the type only, so the edges of the frame keep
+         their colour while the centre stays legible. */
+      radial-gradient(48% 34% at 50% 47%, rgba(6, 12, 28, 0.74) 0%, transparent 100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-film {
+      opacity: 1;
+    }
+  }
+</style>

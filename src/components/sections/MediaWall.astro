@@ -1,0 +1,235 @@
+---
+import { Image } from 'astro:assets'
+import { channelUrl, totalPublished, videoHref, videos } from '../../data/videos'
+
+/**
+ * NITEROIENSE TV
+ *
+ * The club films its own matches, so the campaign has a visual record. This is
+ * that record: a lead film with the best photography the club owns, and the
+ * rest of the shelf beside it. Every still is the frame of the video it sits
+ * on, and every card opens the real video on the club's channel.
+ */
+
+const [lead, ...rest] = videos
+const shelf = rest.slice(0, 6)
+---
+
+<section id="nit-tv" class="relative overflow-hidden" aria-labelledby="nittv-titulo">
+  <div class="shell pt-[clamp(2rem,5vh,3.5rem)] pb-[var(--section-space)]">
+    <div class="flex flex-wrap items-end justify-between gap-x-10 gap-y-5">
+      <div>
+        <h2 id="nittv-titulo" class="t-headline text-white" data-reveal>Niteroiense TV</h2>
+        <p class="t-body mt-4 max-w-[46ch]" data-reveal>
+          O clube transmite e arquiva os próprios jogos. Todo o material abaixo está no canal
+          oficial.
+        </p>
+      </div>
+      <a
+        href={channelUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex min-h-[48px] items-center gap-3 border px-5 text-[0.8125rem] font-bold tracking-[0.1em] text-white uppercase transition-colors hover:border-[var(--accent-bright)]"
+        style="border-color: var(--surface-line); border-radius: 999px;"
+        data-reveal
+      >
+        {totalPublished} vídeos no canal
+      </a>
+    </div>
+
+    <!-- Lead film: the only real close photography the club has published. -->
+    <a
+      href={videoHref(lead.id)}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="film film--lead mt-10 lg:mt-14"
+      data-reveal
+      data-lightbox="nittv"
+      data-type="video"
+      data-title={lead.title}
+      data-description={`${lead.subtitle} / ${lead.competition} / ${lead.dateLabel}`}
+    >
+      <Image
+        src={lead.still}
+        alt={lead.stillAlt}
+        widths={[760, 1280]}
+        sizes="(min-width: 1024px) 84rem, 94vw"
+        class="film__image"
+        loading="lazy"
+      />
+      <span class="film__veil"></span>
+      <span class="film__body">
+        <span class="film__kicker">{lead.subtitle}</span>
+        <span class="film__title film__title--lead">{lead.title}</span>
+        <span class="film__meta">{lead.competition} / {lead.dateLabel}</span>
+      </span>
+      <span class="film__play" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+          <path d="M8 5v14l11-7z"></path>
+        </svg>
+      </span>
+    </a>
+
+    <div class="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      {
+        shelf.map((video) => (
+          <a
+            href={videoHref(video.id)}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="film"
+            data-reveal
+            data-lightbox="nittv"
+            data-type="video"
+            data-title={video.title}
+            data-description={`${video.subtitle} / ${video.competition} / ${video.dateLabel}`}
+          >
+            <Image
+              src={video.still}
+              alt={video.stillAlt}
+              widths={[420, 760]}
+              sizes="(min-width: 1280px) 26rem, (min-width: 640px) 44vw, 92vw"
+              class="film__image"
+              loading="lazy"
+            />
+            <span class="film__veil"></span>
+            <span class="film__body">
+              <span class="film__kicker">{video.subtitle}</span>
+              <span class="film__title">{video.title}</span>
+              <span class="film__meta">{video.competition}</span>
+            </span>
+            <span class="film__play film__play--small" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .film {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: var(--surface-deep);
+    border: 1px solid var(--surface-line);
+  }
+
+  .film--lead {
+    aspect-ratio: 16 / 7;
+  }
+
+  @media (max-width: 639px) {
+    .film--lead {
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  .film__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 900ms var(--ease-athletic);
+  }
+
+  .film:hover .film__image,
+  .film:focus-visible .film__image {
+    transform: scale(1.045);
+  }
+
+  .film__veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(6, 12, 28, 0.1) 0%,
+      rgba(6, 12, 28, 0.55) 52%,
+      rgba(6, 12, 28, 0.92) 100%
+    );
+  }
+
+  .film__body {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: clamp(1.1rem, 2.5vw, 2rem);
+  }
+
+  .film__kicker {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent-bright);
+  }
+
+  .film__title {
+    font-family: var(--font-display), sans-serif;
+    font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .film__title--lead {
+    font-size: clamp(1.7rem, 4.4vw, 3.25rem);
+    letter-spacing: -0.03em;
+  }
+
+  .film__meta {
+    font-size: 0.8125rem;
+    color: var(--ink-muted);
+  }
+
+  /* The play affordance is the crest ring, at control size. */
+  .film__play {
+    position: absolute;
+    top: clamp(1.1rem, 2.5vw, 2rem);
+    right: clamp(1.1rem, 2.5vw, 2rem);
+    display: grid;
+    width: 52px;
+    height: 52px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    background: rgba(6, 12, 28, 0.45);
+    color: #fff;
+    backdrop-filter: blur(6px);
+    transition:
+      background 260ms var(--ease-athletic),
+      border-color 260ms var(--ease-athletic),
+      transform 260ms var(--ease-athletic);
+  }
+
+  .film__play--small {
+    width: 42px;
+    height: 42px;
+  }
+
+  .film:hover .film__play,
+  .film:focus-visible .film__play {
+    background: var(--nfc-azul);
+    border-color: var(--nfc-azul);
+    transform: scale(1.06);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .film__image,
+    .film__play {
+      transition: none;
+    }
+    .film:hover .film__image {
+      transform: none;
+    }
+  }
+</style>

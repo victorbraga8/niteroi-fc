@@ -1,0 +1,42 @@
+---
+import { Image } from 'astro:assets'
+import negativo from '../../assets/brand/nfc-crest-negativo.png'
+import positivo from '../../assets/brand/nfc-crest-positivo.png'
+import oficial from '../../assets/brand/nfc-crest.png'
+
+interface Props {
+  /**
+   * Official crest variants from the Manual de Marca.
+   *  - `negativo`: light crest, for dark surfaces (the page default)
+   *  - `positivo`: dark crest, for light surfaces
+   *  - `oficial`: full colour crest
+   */
+  variant?: 'negativo' | 'positivo' | 'oficial'
+  size?: number
+  class?: string
+  loading?: 'eager' | 'lazy'
+  decorative?: boolean
+}
+
+const {
+  variant = 'negativo',
+  size = 48,
+  class: className,
+  loading = 'lazy',
+  decorative = false,
+} = Astro.props
+
+const sources = { negativo, positivo, oficial }
+const src = sources[variant]
+---
+
+<Image
+  src={src}
+  alt={decorative ? '' : 'Escudo do Niteroiense Futebol Clube'}
+  width={size}
+  height={size}
+  densities={[1, 2]}
+  loading={loading}
+  class={className}
+  aria-hidden={decorative ? 'true' : undefined}
+/>

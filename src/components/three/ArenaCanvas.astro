@@ -1,0 +1,38 @@
+---
+/**
+ * The single WebGL surface of the page. It is created once, lives inside the
+ * pinned opening scene, and stops rendering as soon as that scene leaves the
+ * viewport. There is no second canvas anywhere in the project.
+ */
+---
+
+<div class="pointer-events-none absolute inset-0 overflow-hidden" data-arena-root aria-hidden="true">
+  <canvas class="block h-full w-full" data-arena-canvas></canvas>
+
+  <!-- Static composition that stands in before WebGL starts, and stays as the
+       whole background when WebGL is unavailable or motion is reduced. -->
+  <div class="absolute inset-0 -z-10" data-arena-fallback>
+    <div
+      class="absolute inset-0"
+      style="background: radial-gradient(120% 80% at 50% 18%, #16305e 0%, #0f2349 42%, #060c1c 100%);"
+    >
+    </div>
+    <div
+      class="absolute left-1/2 bottom-[-42%] h-[86vh] w-[160vw] -translate-x-1/2 opacity-30"
+      style="border-top: 1px solid var(--nfc-azul); border-radius: 50% 50% 0 0;"
+    >
+    </div>
+    <div
+      class="absolute left-1/2 bottom-[-30%] h-[62vh] w-[110vw] -translate-x-1/2 opacity-20"
+      style="border-top: 1px solid #fff; border-radius: 50% 50% 0 0;"
+    >
+    </div>
+  </div>
+
+  <!-- Vignette keeps display type readable over the brightest part of the scene. -->
+  <div
+    class="absolute inset-0"
+    style="background: radial-gradient(90% 60% at 50% 46%, transparent 0%, rgba(6,12,28,0.32) 62%, rgba(6,12,28,0.82) 100%);"
+  >
+  </div>
+</div>

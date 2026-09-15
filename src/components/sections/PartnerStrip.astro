@@ -1,0 +1,88 @@
+---
+import { Image } from 'astro:assets'
+import { partners } from '../../data/partners'
+
+/**
+ * QUEM JOGA JUNTO
+ *
+ * Sponsors have real commercial value, so they get a real placement rather
+ * than a footer sidebar. Each logo keeps its own colours and aspect ratio on a
+ * white plate, because recolouring someone else's brand is not ours to do.
+ */
+---
+
+<section
+  data-band="clara"
+  class="relative overflow-hidden"
+  style="background: var(--surface-light);"
+  aria-labelledby="parceiros-titulo"
+>
+  <!-- The same arc that opens every band, returning to the light. -->
+  <div
+    class="pointer-events-none absolute inset-x-[-20%] -top-px h-[7vw] min-h-[2.25rem]"
+    style="background: var(--surface-abyss); border-radius: 0 0 50% 50% / 0 0 100% 100%;"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="shell pt-[clamp(7rem,16vh,10rem)] pb-[clamp(3.5rem,8vh,5.5rem)]">
+    <div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+      <h2 id="parceiros-titulo" class="t-subhead" style="color: var(--ink-dark);" data-reveal>
+        Quem joga junto
+      </h2>
+      <p class="max-w-[40ch] text-[0.9375rem]" style="color: var(--ink-dark-muted);">
+        Poder público, patrocinadores e parceiros que sustentam a temporada 2026.
+      </p>
+    </div>
+
+    <ul class="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4" data-reveal>
+      {
+        partners.map((partner) => (
+          <li>
+            <a
+              href={partner.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="partner-plate"
+              aria-label={`${partner.name}, abre em nova aba`}
+            >
+              <Image
+                src={partner.logo}
+                alt={partner.name}
+                widths={[270, 540]}
+                sizes="16rem"
+                class="h-full w-full object-contain"
+                loading="lazy"
+              />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .partner-plate {
+    display: grid;
+    place-items: center;
+    min-height: 86px;
+    padding: 1rem 1.35rem;
+    background: #fff;
+    border: 1px solid #dbe3f1;
+    transition:
+      transform 260ms var(--ease-athletic),
+      border-color 260ms var(--ease-athletic),
+      box-shadow 260ms var(--ease-athletic);
+  }
+
+  .partner-plate:hover {
+    border-color: var(--nfc-azul);
+    transform: translateY(-3px);
+    box-shadow: 0 16px 34px rgba(15, 35, 73, 0.14);
+  }
+
+  .partner-plate:active {
+    transform: translateY(0);
+  }
+</style>

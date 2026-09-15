@@ -1,0 +1,76 @@
+---
+import Crest from '../ui/Crest.astro'
+import { crestStory } from '../../data/club'
+
+/**
+ * NITERÓI
+ *
+ * The white stripe of the club flag opens here, and this is its title. It is
+ * the moment of rest between two long dark sequences: no scrub, no pin, no
+ * carousel. The edited news directly below carries the section.
+ *
+ * The crest story sits inline with the opening statement, because it is the
+ * clearest proof of the claim the heading makes: the city decides with the
+ * club.
+ */
+---
+
+<section
+  id="niteroi"
+  data-band="clara"
+  class="relative overflow-hidden"
+  aria-labelledby="niteroi-titulo"
+>
+  <!-- The dark field of "Quem joga" closing downward into the band, the same
+       arc the rest of the page is built from. -->
+  <div
+    class="pointer-events-none absolute inset-x-[-20%] -top-px h-[clamp(2.25rem,4.5vw,3.25rem)]"
+    style="background: #060c1c; border-radius: 0 0 50% 50% / 0 0 100% 100%;"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div style="background: var(--surface-light);">
+    <!-- Cleared past the curve, so the heading never sits against it. -->
+    <div class="shell pt-[clamp(9rem,20vh,13rem)] pb-[clamp(4rem,9vh,6rem)]">
+      <div class="grid gap-x-14 gap-y-10 lg:grid-cols-[1.1fr_1fr] lg:items-start">
+        <div>
+          <h2 id="niteroi-titulo" class="t-headline" style="color: var(--ink-dark);" data-reveal>
+            A cidade joga junto
+          </h2>
+          <p class="t-body mt-5 max-w-[52ch]" style="color: var(--ink-dark-muted);" data-reveal>
+            O escudo, os uniformes e a sede do Niteroiense foram decididos com a torcida em 2026.
+            Não é uma campanha de marketing: é como o clube tem tomado decisões desde que voltou.
+          </p>
+        </div>
+
+        <div
+          class="flex items-start gap-6 border-t pt-8 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-10"
+          style="border-color: var(--ink-dark-line, rgba(11,23,52,0.12));"
+          data-reveal
+        >
+          <Crest variant="positivo" size={72} class="mt-1 shrink-0" />
+          <div>
+            <h3
+              class="t-label mb-2"
+              style="color: var(--nfc-azul);"
+            >
+              O escudo
+            </h3>
+            <p
+              class="text-[1.35rem] leading-[1.15] font-extrabold tracking-[-0.02em] uppercase"
+              style="font-family: var(--font-display), sans-serif; color: var(--ink-dark);"
+            >
+              {crestStory.line}
+            </p>
+            <p class="mt-3 text-[1rem] leading-relaxed" style="color: var(--ink-dark-muted);">
+              Projeto de <strong style="color: var(--ink-dark);">{crestStory.designer}</strong>,
+              vencedor de uma votação popular com {crestStory.votes} e {crestStory.share} da
+              preferência. Dentro do monograma NFC está o {crestStory.reference}, estilizado.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

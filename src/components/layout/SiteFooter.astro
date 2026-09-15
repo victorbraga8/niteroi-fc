@@ -1,0 +1,182 @@
+---
+import { Image } from 'astro:assets'
+import Crest from '../ui/Crest.astro'
+import Wordmark from '../ui/Wordmark.astro'
+import golResende from '../../assets/media/gol-resende-2024.jpg'
+import { club, social } from '../../data/club'
+import { officialLinks, primaryNav } from '../../config/navigation'
+---
+
+<!--
+  The page closes on the squad together after a goal: the one photograph the
+  club owns that is about the group rather than about the ball. It is credited
+  with the match it came from, and pushed back far enough to read as ground.
+-->
+<footer class="site-footer relative overflow-hidden">
+  <div class="site-footer__bg" aria-hidden="true">
+    <Image
+      src={golResende}
+      alt=""
+      widths={[960, 1280]}
+      sizes="100vw"
+      class="site-footer__photo"
+      loading="lazy"
+    />
+    <span class="site-footer__duotone"></span>
+    <span class="site-footer__veil"></span>
+  </div>
+
+  <div class="shell relative z-10 py-[clamp(3.5rem,8vh,5.5rem)]">
+    <div class="grid gap-x-12 gap-y-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div>
+        <div class="flex items-center gap-5">
+          <Crest size={96} class="site-footer__crest" />
+          <Wordmark class="text-[clamp(19px,2.4vw,26px)] text-white" />
+        </div>
+        <p class="mt-6 max-w-[34ch] text-[0.9375rem] leading-relaxed text-[var(--ink-muted)]">
+          Fundado em {club.founded}. De volta aos gramados desde {club.refoundedYear}, mandante na
+          {' '}{club.homeVenue}.
+        </p>
+      </div>
+
+      <nav aria-label="Seções desta página">
+        <h2 class="t-label mb-4 text-[0.8125rem]">Nesta página</h2>
+        <ul class="space-y-0.5">
+          {
+            primaryNav.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="inline-flex min-h-[40px] items-center text-[0.9375rem] text-[var(--ink-muted)] transition-colors hover:text-white"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav aria-label="Site oficial do clube">
+        <h2 class="t-label mb-4 text-[0.8125rem]">Site oficial</h2>
+        <ul class="space-y-0.5">
+          {
+            officialLinks.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex min-h-[40px] items-center text-[0.9375rem] text-[var(--ink-muted)] transition-colors hover:text-white"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav aria-label="Redes sociais">
+        <h2 class="t-label mb-4 text-[0.8125rem]">Redes</h2>
+        <ul class="space-y-0.5">
+          {
+            social.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex min-h-[40px] items-center text-[0.9375rem] text-[var(--ink-muted)] transition-colors hover:text-white"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+
+    <p class="mt-10 text-[0.8125rem] text-[var(--ink-faint)]">
+      Imagem: Niteroiense 3 x 0 EC Resende, Carioca Série C 2024 / Niteroiense TV
+    </p>
+  </div>
+
+  <!-- Copyright is a rule at the bottom of the page, not a block of its own. -->
+  <div class="site-footer__legal relative z-10">
+    <div class="shell flex h-10 items-center justify-between gap-4">
+      <p>© {new Date().getFullYear()} {club.name}</p>
+      <p>
+        Conteúdo e imagens do{' '}
+        <a
+          href={club.site}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="underline underline-offset-2 transition-colors hover:text-white">site oficial</a
+        >
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--surface-abyss);
+  }
+
+  .site-footer__bg {
+    position: absolute;
+    inset: 0;
+  }
+
+  .site-footer__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 34%;
+    transform: scale(1.06);
+    filter: blur(3px) saturate(1.12);
+  }
+
+  .site-footer__duotone {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(200deg, #16305e 0%, #060c1c 100%);
+    mix-blend-mode: multiply;
+  }
+
+  .site-footer__veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(6, 12, 28, 0.88) 0%,
+      rgba(6, 12, 28, 0.7) 44%,
+      rgba(6, 12, 28, 0.93) 100%
+    );
+  }
+
+  .site-footer__crest {
+    width: clamp(68px, 9vw, 96px);
+    height: auto;
+    flex: none;
+  }
+
+  .site-footer__legal {
+    border-top: 1px solid var(--surface-line);
+    background: rgba(6, 12, 28, 0.74);
+    font-size: 0.8125rem;
+    color: var(--ink-faint);
+  }
+
+  @media (max-width: 599px) {
+    .site-footer__legal .shell {
+      height: auto;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.1rem;
+      padding-block: 0.55rem;
+    }
+  }
+</style>

@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import AgoraScene from '../components/sections/AgoraScene.astro'
+import MatchdayBriefing from '../components/match/MatchdayBriefing.astro'
+import SeasonJourney from '../components/sections/SeasonJourney.astro'
+import MediaWall from '../components/sections/MediaWall.astro'
+import PlayerShowcase from '../components/sections/PlayerShowcase.astro'
+import CommunityWall from '../components/sections/CommunityWall.astro'
+import EditorialLead from '../components/sections/EditorialLead.astro'
+import ClubInside from '../components/sections/ClubInside.astro'
+import PartnerStrip from '../components/sections/PartnerStrip.astro'
+
+import { matchday, nextMatch } from '../data/season'
+import { currentMode } from '../config/experience'
+import { club } from '../data/club'
+
+const title = `${club.name} | Niterói em campo`
+const description =
+  'A temporada 2026 do Niteroiense na Série B1 do Carioca: próximo jogo, campanha rodada a rodada, elenco, torcida e o clube por dentro.'
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- AGORA: what is happening right now, as one continuous scene. -->
+  <AgoraScene />
+
+  <!-- The practical half of the build-up, only while it is useful. -->
+  {currentMode.showMatchdayOperations && <MatchdayBriefing match={nextMatch} info={matchday} />}
+
+  <!-- A CAMPANHA: the season read as a trajectory. -->
+  <SeasonJourney />
+
+  <!-- The visual record of the campaigns that got the club here. -->
+  <MediaWall />
+
+  <!-- QUEM JOGA: the protagonist and the announced group. -->
+  <PlayerShowcase />
+
+  <!-- NITERÓI: the city, in the white band of the club flag. -->
+  <CommunityWall />
+  <EditorialLead />
+
+  <!-- DENTRO DO CLUBE: history, identity, institutional material. -->
+  <ClubInside />
+
+  <PartnerStrip />
+</BaseLayout>

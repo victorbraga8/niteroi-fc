@@ -1,0 +1,81 @@
+/*
+ * NITEROIENSE FC - design tokens
+ *
+ * Brand layer: the three official colours from the Manual de Marca
+ * (docs_transparencia/5.pdf, page 17). Nothing invented.
+ * Surface layer: depth built by stepping between Azul Itaipu and white,
+ * because a single flat blue is not the identity. Contrast is.
+ */
+
+:root {
+  /* --- Brand (official) --- */
+  --nfc-itaipu: #0f2349;
+  --nfc-azul: #2c65d5;
+  --nfc-branco: #ffffff;
+
+  /* --- Surfaces: derived depth, same hue family --- */
+  --surface-abyss: #060c1c;
+  --surface-deep: #0b1734;
+  --surface-base: #0f2349;
+  --surface-raised: #16305e;
+  --surface-line: #23407a;
+  --surface-light: #eef2fa;
+  --surface-light-raised: #ffffff;
+
+  /* --- Ink --- */
+  --ink-bright: #ffffff;
+  --ink-muted: #a8bade;
+  --ink-faint: #7287b3;
+  --ink-dark: #0b1734;
+  --ink-dark-muted: #3c517f;
+
+  /* --- Accent: a single controlled highlight, lifted from Azul Niteroiense --- */
+  --accent: #2c65d5;
+  --accent-bright: #5a90ff;
+  --accent-soft: rgba(44, 101, 213, 0.16);
+
+  /* --- Result semantics (sport, not decoration) --- */
+  --result-win: #3ddc97;
+  --result-draw: #a8bade;
+  --result-loss: #ff6b6b;
+
+  /* --- Shape language: the crest is a ring over an arc --- */
+  --radius-arc: 999px;
+  --radius-plate: 2px;
+  --border-hair: 1px solid var(--surface-line);
+
+  /* --- Rhythm --- */
+  --gutter: clamp(1.25rem, 4vw, 5rem);
+  --measure: 62ch;
+  --section-space: clamp(5rem, 11vh, 9.5rem);
+
+  /* --- Motion --- */
+  --ease-athletic: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
+  --dur-fast: 180ms;
+  --dur-base: 420ms;
+
+  /* --- Layers --- */
+  --z-arena: 0;
+  --z-content: 10;
+  --z-header: 60;
+  --z-overlay: 70;
+
+  color-scheme: dark;
+}
+
+/*
+ * One deliberate colour block: the central white stripe of the club flag.
+ * Applied to a single zone (Niterói / community + editorial), never at random.
+ */
+[data-band='clara'] {
+  --surface-abyss: var(--surface-light);
+  --surface-deep: var(--surface-light);
+  --surface-base: var(--surface-light);
+  --surface-raised: var(--surface-light-raised);
+  --surface-line: #cbd7ec;
+  --ink-bright: var(--ink-dark);
+  --ink-muted: var(--ink-dark-muted);
+  --ink-faint: #6c80ab;
+  --accent-bright: var(--nfc-azul);
+}

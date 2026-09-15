@@ -1,0 +1,47 @@
+---
+import BaseHead from '../components/layout/BaseHead.astro'
+import SiteHeader from '../components/navigation/SiteHeader.astro'
+import SiteFooter from '../components/layout/SiteFooter.astro'
+import BackToTop from '../components/ui/BackToTop.astro'
+import Preloader from '../components/layout/Preloader.astro'
+import '../styles/global.css'
+
+interface Props {
+  title: string
+  description: string
+}
+
+const { title, description } = Astro.props
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <BaseHead title={title} description={description} />
+  </head>
+  <body>
+    <Preloader />
+
+    <a
+      href="#conteudo"
+      class="sr-only rounded-none px-5 py-3 font-bold focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[80]"
+      style="background: var(--nfc-azul); color: #fff;">Pular para o conteúdo</a
+    >
+
+    <SiteHeader />
+
+    <main id="conteudo">
+      <slot />
+    </main>
+
+    <SiteFooter />
+    <BackToTop />
+
+    <div class="grain" aria-hidden="true"></div>
+
+    <script>
+      import { initMotion } from '../lib/motion'
+      initMotion()
+    </script>
+  </body>
+</html>
