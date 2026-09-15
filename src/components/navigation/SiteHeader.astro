@@ -103,7 +103,7 @@ const prefix = nextMatch.side === 'casa' ? 'x' : 'fora com'
       }
       <a
         href="#proximo-desafio"
-        class="mt-4 mb-3 flex min-h-[52px] items-center justify-between px-4 text-[0.8125rem] font-bold tracking-[0.08em] uppercase"
+        class="mobile-next-match mt-4 mb-3 flex min-h-[52px] items-center justify-between gap-3 font-bold uppercase"
         style="background: var(--nfc-azul); color: #fff; border-radius: 999px;"
         data-mobile-link
       >
@@ -126,5 +126,19 @@ const prefix = nextMatch.side === 'casa' ? 'x' : 'fora com'
   }
   [data-menu-toggle][aria-expanded='true'] [data-bar='bottom'] {
     transform: translateY(-4.5px) rotate(-45deg);
+  }
+
+  /* Two facts that must both survive on one line, on the narrowest phone the
+     menu ever opens on: the label ("Próximo jogo") and the fixture itself
+     (opponent plus date). The pill only ever appears in this menu, so its
+     type does not need to answer for any other breakpoint. */
+  .mobile-next-match {
+    padding-inline: 0.9rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.03em;
+  }
+
+  .mobile-next-match span {
+    white-space: nowrap;
   }
 </style>

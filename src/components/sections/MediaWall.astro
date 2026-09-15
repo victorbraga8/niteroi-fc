@@ -17,8 +17,8 @@ const shelf = rest.slice(0, 6)
 
 <section id="nit-tv" class="relative overflow-hidden" aria-labelledby="nittv-titulo">
   <div class="shell pt-[clamp(2rem,5vh,3.5rem)] pb-[var(--section-space)]">
-    <div class="flex flex-wrap items-end justify-between gap-x-10 gap-y-5">
-      <div>
+    <div class="nittv-head flex flex-wrap items-end justify-between gap-x-10 gap-y-5">
+      <div class="nittv-lede">
         <h2 id="nittv-titulo" class="t-headline text-white" data-reveal>Niteroiense TV</h2>
         <p class="t-body mt-4 max-w-[46ch]" data-reveal>
           O clube transmite e arquiva os próprios jogos. Todo o material abaixo está no canal
@@ -230,6 +230,18 @@ const shelf = rest.slice(0, 6)
     }
     .film:hover .film__image {
       transform: none;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    .nittv-head {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .nittv-lede p {
+      margin-inline: auto;
     }
   }
 </style>

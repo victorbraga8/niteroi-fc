@@ -78,7 +78,7 @@ const fullDate = new Intl.DateTimeFormat('pt-BR', {
 
   <!-- Match facts. Only fields the club has actually published. -->
   <dl
-    class="mt-7 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4"
+    class="match-facts mt-7 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4"
     data-match-line
   >
     <div>
@@ -125,6 +125,42 @@ const fullDate = new Intl.DateTimeFormat('pt-BR', {
       font-size: 0.9375rem;
       margin-inline: auto;
       max-width: 34ch;
+    }
+  }
+
+  /* Below sm, the crest and name stack in a column, and a plain "1fr" grid
+     track keeps its automatic min-content minimum: a long single-word name
+     like "Niteroiense" cannot break on a space, so the track grows to fit it
+     and the far side is pushed out past the board and clipped. minmax(0, 1fr)
+     removes that minimum, and the name is then free to wrap onto a second
+     line instead of overflowing. */
+  @media (max-width: 639.98px) {
+    [data-match-board] {
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    }
+
+    [data-match-board] > div:first-child,
+    [data-match-board] > div:last-child {
+      width: 100%;
+    }
+
+    [data-match-board] .t-subhead {
+      display: block;
+      width: 100%;
+      overflow-wrap: break-word;
+      /* The inline clamp() floors at 1.05rem, which is still too wide for an
+         11-letter name in an ~83px column: it wraps, but break-word has no
+         hyphen to offer, so it splits the word wherever it lands. One size
+         down and the name clears the column whole. */
+      font-size: 0.75rem !important;
+    }
+
+    /* Everything under the crests is supporting detail the header and the
+       "Antes da bola rolar" block already cover; on a phone the board itself
+       is the thing worth the space. */
+    .match-facts,
+    .match-support {
+      display: none;
     }
   }
 </style>

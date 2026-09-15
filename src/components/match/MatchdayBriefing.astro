@@ -60,7 +60,7 @@ const gallery = [
 
   <!-- The bottom padding clears the arc, so the photo bar never sits inside it. -->
   <div class="shell relative z-10 pt-[clamp(4.5rem,9vh,7rem)] pb-[clamp(5rem,10vh,7.5rem)]">
-    <div class="flex flex-wrap items-end justify-between gap-x-8 gap-y-3">
+    <div class="matchday__head flex flex-wrap items-end justify-between gap-x-8 gap-y-3">
       <div>
         <p class="matchday__kicker" data-reveal>Antes da bola rolar</p>
         <h2
@@ -601,6 +601,34 @@ const gallery = [
     .matchday__pill:hover,
     .matchday__card:hover .matchday__card-photo {
       transform: none;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    /* The heading stacks and centres, matching every other section opening. */
+    .matchday__head {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* A quick list of attractions is a nice-to-have, not something a visitor
+       needs before deciding to go; on a narrow screen the three practical
+       cards above already carry the section. */
+    .matchday__attractions {
+      display: none;
+    }
+
+    /* The sales rule is the one fact that must not be missed, so it gets
+       fewer neighbours and a slightly smaller voice than the ticket prices
+       above it, not a bigger one. */
+    .matchday__note-text {
+      font-size: 0.84375rem;
+    }
+
+    /* A caption for three photographs that are already self-evident. */
+    .matchday__credit {
+      display: none;
     }
   }
 </style>

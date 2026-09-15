@@ -94,7 +94,7 @@ const pad = (n: number) => String(n).padStart(2, '0')
 
     <!-- Layer 2 - the campaign, as broadcast typography -->
     <div class="shell relative z-10 w-full" data-arena-layer="numeros">
-      <div class="flex flex-wrap items-end justify-center gap-x-[clamp(1.5rem,6vw,5rem)] gap-y-6">
+      <div class="arena-numbers-row flex flex-wrap items-end justify-center gap-x-[clamp(1.5rem,6vw,5rem)] gap-y-6">
         {
           numbers.map((item) => (
             <div class="flex items-end gap-3" data-arena-number>
@@ -102,7 +102,7 @@ const pad = (n: number) => String(n).padStart(2, '0')
                 {pad(item.value)}
               </span>
               <span
-                class="pb-[0.35em] text-[0.8125rem] font-bold tracking-[0.16em] uppercase"
+                class="arena-number-label pb-[0.35em] text-[0.8125rem] font-bold tracking-[0.16em] uppercase"
                 style="color: var(--accent-bright);"
               >
                 {item.value === 1 ? item.label : item.pluralLabel}
@@ -111,7 +111,7 @@ const pad = (n: number) => String(n).padStart(2, '0')
           ))
         }
       </div>
-      <p class="mt-9 flex justify-center">
+      <p class="score-line mt-9 flex justify-center">
         <span class="score-banner">
           {campaign.goalsFor} gols marcados e {campaign.goalsAgainst} sofrido{
             campaign.goalsAgainst === 1 ? '' : 's'
@@ -204,6 +204,36 @@ const pad = (n: number) => String(n).padStart(2, '0')
   @media (min-width: 1024px) {
     html.motion-ready [data-scene='arena'] {
       height: calc(var(--scene-vh-desktop) * 1svh);
+    }
+  }
+
+  /* The score line is a footnote to the campaign numbers, not load-bearing:
+     on a narrow screen it competes with the numbers for a very tight band of
+     vertical space, so it is dropped rather than squeezed. */
+  @media (max-width: 767.98px) {
+    .score-line {
+      display: none;
+    }
+
+    /* Each number+label pair is its own flex line, centred on its own total
+       width; since "Jogos" is a shorter word than "Pontos" or "Vitória",
+       that pair's total width is narrower and its centred position puts the
+       number itself a few pixels off from the other two. The number is
+       already identical width every time (tabular figures, two digits), so
+       giving the label a fixed slot instead of its own natural width makes
+       every pair the same total width, and the number lands in the same
+       place on every line regardless of which label follows it. The label
+       stays a real box the entrance animation can still fade and slide, it
+       is just wider than its text now. */
+    .arena-numbers-row {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .arena-number-label {
+      display: inline-block;
+      min-width: 4.15rem;
+      text-align: left;
     }
   }
 </style>

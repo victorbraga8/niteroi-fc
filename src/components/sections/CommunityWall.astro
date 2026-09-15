@@ -2,6 +2,10 @@
 import Crest from '../ui/Crest.astro'
 import { crestStory } from '../../data/club'
 
+// "O escudo muda. A história continua." reads as two beats, not one run-on
+// sentence, so it is split on its own punctuation rather than hard-coded.
+const [crestLineFirst, crestLineSecond] = crestStory.line.split(/(?<=\.)\s+/)
+
 /**
  * NITERÓI
  *
@@ -34,7 +38,7 @@ import { crestStory } from '../../data/club'
     <!-- Cleared past the curve, so the heading never sits against it. -->
     <div class="shell pt-[clamp(9rem,20vh,13rem)] pb-[clamp(4rem,9vh,6rem)]">
       <div class="grid gap-x-14 gap-y-10 lg:grid-cols-[1.1fr_1fr] lg:items-start">
-        <div>
+        <div class="niteroi-lede">
           <h2 id="niteroi-titulo" class="t-headline" style="color: var(--ink-dark);" data-reveal>
             A cidade joga junto
           </h2>
@@ -45,7 +49,7 @@ import { crestStory } from '../../data/club'
         </div>
 
         <div
-          class="flex items-start gap-6 border-t pt-8 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-10"
+          class="niteroi-escudo flex items-start gap-6 border-t pt-8 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-10"
           style="border-color: var(--ink-dark-line, rgba(11,23,52,0.12));"
           data-reveal
         >
@@ -61,7 +65,9 @@ import { crestStory } from '../../data/club'
               class="text-[1.35rem] leading-[1.15] font-extrabold tracking-[-0.02em] uppercase"
               style="font-family: var(--font-display), sans-serif; color: var(--ink-dark);"
             >
-              {crestStory.line}
+              {crestLineFirst}
+              <br />
+              {crestLineSecond}
             </p>
             <p class="mt-3 text-[1rem] leading-relaxed" style="color: var(--ink-dark-muted);">
               Projeto de <strong style="color: var(--ink-dark);">{crestStory.designer}</strong>,
@@ -74,3 +80,21 @@ import { crestStory } from '../../data/club'
     </div>
   </div>
 </section>
+
+<style>
+  @media (max-width: 767.98px) {
+    .niteroi-lede {
+      text-align: center;
+    }
+
+    .niteroi-lede p {
+      margin-inline: auto;
+    }
+
+    .niteroi-escudo {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
+</style>

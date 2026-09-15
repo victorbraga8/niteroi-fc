@@ -114,7 +114,15 @@ export function initArenaScene(mm: gsap.MatchMedia, ready: Promise<void> = Promi
         // because acceleration is the movement this domain actually owns.
         .addLabel('numeros', 0.28)
         .set(numeros, { autoAlpha: 1 }, 0.28)
-        .from(numberItems, { xPercent: 34, autoAlpha: 0, duration: 0.09, stagger: 0.028 }, 0.28)
+        // A shorter travel on a narrow screen: touch scrolling is far more
+        // likely to settle mid-tween than a mouse wheel, and a smaller offset
+        // means a scroll that stops here still reads as centred rather than
+        // sliding in from the side.
+        .from(
+          numberItems,
+          { xPercent: isMobile ? 12 : 34, autoAlpha: 0, duration: 0.09, stagger: 0.028 },
+          0.28,
+        )
         .to(numeros, { autoAlpha: 0, xPercent: -4, duration: 0.12 }, 0.5)
         .set(numeros, { autoAlpha: 0 }, 0.62)
 

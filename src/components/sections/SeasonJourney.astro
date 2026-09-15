@@ -54,15 +54,15 @@ const resultColor = {
     <div class="journey-frame">
       <!-- Header of the scene. It stays while the rounds go past. -->
       <div class="shell journey-head">
-        <div class="flex flex-wrap items-end justify-between gap-x-10 gap-y-5">
-          <div>
+        <div class="journey-head-row flex flex-wrap items-end justify-between gap-x-10 gap-y-5">
+          <div class="journey-lede">
             <h2 id="campanha-titulo" class="t-headline text-white" data-reveal>A campanha</h2>
             <p class="t-body mt-3 max-w-[44ch] text-[1rem]" data-reveal>
               Onze rodadas na Série B1. Estamos percorrendo a terceira.
             </p>
           </div>
 
-          <div class="flex flex-wrap items-center gap-x-4 gap-y-2" data-reveal>
+          <div class="journey-stats flex flex-wrap items-center gap-x-4 gap-y-2" data-reveal>
             <p class="flex items-center gap-1.5">
               {
                 form.map((result) => (
@@ -156,7 +156,7 @@ const resultColor = {
   {
     standingsAvailable
       ? 'Classificação atualizada conforme a federação.'
-      : `A tabela completa da Série B1 não é publicada nos canais oficiais do ${club.shortName}.<br /> Os números acima vêm apenas dos jogos já disputados pelo clube.`
+      : `A tabela completa da Série B1 não é publicada nos canais oficiais do ${club.shortName}. Os números acima vêm apenas dos jogos já disputados pelo clube.`
   }
 </p>
       </div>
@@ -322,6 +322,22 @@ const resultColor = {
     /* Chevrons only exist where the traverse is horizontal. */
     html.motion-ready .journey-steps {
       display: flex;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    .journey-head-row {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .journey-lede p {
+      margin-inline: auto;
+    }
+
+    .journey-stats {
+      justify-content: center;
     }
   }
 </style>

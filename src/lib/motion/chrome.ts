@@ -218,6 +218,8 @@ function initSquadFilter() {
     )
   }
 
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   const apply = (value: string) => {
     buttons.forEach((button) =>
       button.setAttribute('aria-pressed', String(button.dataset.squadFilter === value)),
@@ -229,6 +231,17 @@ function initSquadFilter() {
   }
 
   buttons.forEach((button) => {
-    button.addEventListener('click', () => apply(button.dataset.squadFilter ?? 'todos'))
+    button.addEventListener('click', () => {
+      const value = button.dataset.squadFilter ?? 'todos'
+      apply(value)
+
+      // Choosing a position is a jump, not just an emphasis: the list is long
+      // enough that the group a visitor asked for can sit off-screen below
+      // the filters, on a phone especially. "Todos" has no single group to
+      // jump to, so it is left where it is.
+      if (value === 'todos') return
+      const target = groups.find((group) => group.dataset.squadGroup === value)
+      target?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+    })
   })
 }

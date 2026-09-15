@@ -16,7 +16,7 @@ export const stories: Story[] = [
   {
     id: 'elenco-2026',
     kicker: 'Temporada',
-    title: 'Niteroiense apresenta elenco, comissão técnica e diretoria para a temporada 2026',
+    title: 'Temporada 2026: Elenco, Comissão Técnica e Diretoria',
     standfirst:
       'Clube oficializa o grupo que representará o Niteroiense na temporada, com foco na disputa do Carioca Série B1 e na busca pelo acesso à Série A2.',
     date: '2026-09-04',

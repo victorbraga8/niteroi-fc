@@ -26,11 +26,11 @@ import { partners } from '../../data/partners'
   </div>
 
   <div class="shell pt-[clamp(7rem,16vh,10rem)] pb-[clamp(3.5rem,8vh,5.5rem)]">
-    <div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+    <div class="partners-head flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
       <h2 id="parceiros-titulo" class="t-subhead" style="color: var(--ink-dark);" data-reveal>
         Quem joga junto
       </h2>
-      <p class="max-w-[40ch] text-[0.9375rem]" style="color: var(--ink-dark-muted);">
+      <p class="partners-lede max-w-[40ch] text-[0.9375rem]" style="color: var(--ink-dark-muted);">
         Poder público, patrocinadores e parceiros que sustentam a temporada 2026.
       </p>
     </div>
@@ -95,5 +95,28 @@ import { partners } from '../../data/partners'
 
   .partner-plate:active {
     transform: translateY(0);
+  }
+
+  @media (max-width: 767.98px) {
+    .partners-head {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .partners-lede {
+      margin-inline: auto;
+    }
+
+    /* With no explicit width, "aspect-ratio" plus "height: 100%" resolves the
+       box from its height first: at a two-column grid width the row height
+       (from min-height) yields a width wider than the grid cell, and the
+       plate overflows into its neighbour. An explicit width keeps the cell
+       the source of truth for both dimensions. This does not reproduce at
+       wider grids, where the row is tall enough that height is never the
+       binding constraint, so the fix is scoped to where the bug actually is. */
+    .partner-plate {
+      width: 100%;
+    }
   }
 </style>
